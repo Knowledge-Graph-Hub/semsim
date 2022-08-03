@@ -3,10 +3,11 @@ name = "semsim"
 version = "0.1.0"
 description = ""
 authors = ["Justin Reese <justaddcoffee@gmail.com>",
-"Harshhegde@lbl.gov
-jhc@lbl.gov
-
+"Harshad Hegde" <hhegde@lbl.gov>,
+"J. Harry Caufield" <jhc@lbl.gov>
 ]
+readme = "README.md"
+licens
 
 [tool.poetry.dependencies]
 python = "^3.9"
