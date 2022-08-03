@@ -2,7 +2,11 @@
 name = "semsim"
 version = "0.1.0"
 description = ""
-authors = ["Justin Reese <justaddcoffee@gmail.com>"]
+authors = ["Justin Reese <justaddcoffee@gmail.com>",
+"Harshhegde@lbl.gov
+jhc@lbl.gov
+
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
