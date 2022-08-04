@@ -1,10 +1,10 @@
 """Process ontology and retrieve pairwise similarities."""
 
+
 from collections import Counter
-from .compute_pairwise_similarities import (
-    compute_pairwise_ancestors_jaccard,
-    compute_pairwise_resnik,
-)
+
+from .compute_pairwise_similarities import (compute_pairwise_ancestors_jaccard,
+                                            compute_pairwise_resnik)
 
 import pandas as pd
 
@@ -19,7 +19,6 @@ def get_similarities(
     :param ancestors_jaccard_path: str, where to store the Ancestors Jaccard
         pairwise similarities.
     """
-
     ontology = ontology.upper()
     onto_graph_class_name = f"grape.datasets.kgobo.{ontology}"
     onto_graph_class = dynamically_import_class(onto_graph_class_name)
@@ -59,7 +58,6 @@ def dynamically_import_class(name) -> object:
     :param reference: The reference or path for the class to be imported.
     :return: The imported class
     """
-
     components = name.split(".")
     mod = __import__(components[0])
     for comp in components[1:]:
