@@ -1,4 +1,4 @@
-"""Compute pairwose similarities."""
+"""Compute pairwise similarities."""
 from typing import Dict
 
 import pandas as pd
