@@ -26,11 +26,13 @@ def run(ontology: str, output_dir: str) -> None:
 
     # get ontology, make into DAG
 
-    # make counts
+    # make counts (Dict[s])
 
     # call compute pairwise similarity
 
     # merge two results
+
+    # write out
     return None
 
 
