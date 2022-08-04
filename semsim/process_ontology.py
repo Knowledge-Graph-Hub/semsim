@@ -7,7 +7,7 @@ from .compute_pairwise_similarities import (compute_pairwise_ancestors_jaccard,
                                             compute_pairwise_resnik)
 
 GRAPE_DATA_MOD = "grape.datasets.kgobo"
-
+ANNOTATION_SOURCES = {"HP":"http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa"}
 
 def get_similarities(
     ontology: str, resnik_path: str, ancestors_jaccard_path: str
@@ -35,7 +35,7 @@ def get_similarities(
     counts = dict(
         Counter(
             pd.read_csv(
-                "http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa",
+                ANNOTATION_SOURCES[ontology],
                 sep="\t",
                 skiprows=4,
             ).HPO_ID
