@@ -26,7 +26,7 @@ def run(ontology: str, output_dir: str) -> None:
 
     # get ontology, make into DAG
 
-    # make counts (Dict[s])
+    # make counts (Dict[curie, count])
 
     # call compute pairwise similarity
 
@@ -38,17 +38,3 @@ def run(ontology: str, output_dir: str) -> None:
 
 if __name__ == "__main__":
     run()
-
-
-#     """Generate a file containing all by all 
-#     semantic similarity for each pair of terms in an ontology
-#     (by default, ontology is HP)
-
-#     :param ontology: [An OBO Foundry ontologiy to run over [HP]""",
-# ]
-#     :type ontology: [type]
-#     :param output_dir: [description]
-#     :type output_dir: [type]
-#     :return: [description]
-#     :rtype: [type]
-#     """
