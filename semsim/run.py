@@ -19,7 +19,7 @@ def run(ontology: str, output_dir: str) -> None:
     Jaccard) for each pair of terms in an ontology (by default, ontology is HP)
 
     :param ontology: An OBO Foundry ontology on which to compute sem sim [HP]
-    :param output_dir: Path to write out file with all by all sem sim measurements
+    :param output_dir: Path to write file of all by all sem sim measurements
     :return: None
     """
     print(f"ontology is {ontology}")
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     run()
 
 
-#     """Generate a file containing all by all 
+#     """Generate a file containing all by all
 #     semantic similarity for each pair of terms in an ontology
 #     (by default, ontology is HP)
 
