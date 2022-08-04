@@ -13,7 +13,7 @@ def main():
 
 
 @main.command()
-@click.option("--output-dir", "-o", required=False, default="data/raw")
+@click.option("--output-dir", "-o", required=False, default="data")
 @click.argument("ontology", default="HP")
 def run(ontology: str, output_dir: str) -> None:
     """Generate a file containing the semantic similarity.
@@ -26,6 +26,9 @@ def run(ontology: str, output_dir: str) -> None:
     :return: None
     """
     print(f"ontology is {ontology}")
+
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
 
     # get ontology, make into DAG
     get_similarities(
