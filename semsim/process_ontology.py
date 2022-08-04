@@ -6,8 +6,8 @@ import pandas as pd
 from .compute_pairwise_similarities import (compute_pairwise_ancestors_jaccard,
                                             compute_pairwise_resnik)
 
-
 GRAPE_DATA_MOD = "grape.datasets.kgobo"
+
 
 def get_similarities(
     ontology: str, resnik_path: str, ancestors_jaccard_path: str
@@ -57,7 +57,6 @@ def import_grape_class(name) -> object:
     :param reference: The reference or path for the class to be imported.
     :return: The imported class
     """
-
     mod = __import__(GRAPE_DATA_MOD, fromlist=[name])
     this_class = getattr(mod, name)
     return this_class
