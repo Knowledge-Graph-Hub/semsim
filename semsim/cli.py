@@ -4,6 +4,7 @@ import click
 
 @click.group()
 def main():
+    """CLI for semsim."""
     pass
 
 
