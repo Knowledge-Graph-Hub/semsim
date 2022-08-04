@@ -3,10 +3,8 @@ from collections import Counter
 
 import pandas as pd
 
-from .compute_pairwise_similarities import (
-    compute_pairwise_ancestors_jaccard,
-    compute_pairwise_resnik,
-)
+from .compute_pairwise_similarities import (compute_pairwise_ancestors_jaccard,
+                                            compute_pairwise_resnik)
 
 
 def get_similarities(
@@ -23,7 +21,6 @@ def get_similarities(
     ancestors_jaccard_path: str
         Where to store the Ancestors Jaccard pairwise similarities.
     """
-
     ontology = ontology.upper()
     onto_graph_class_name = f"grape.datasets.kgobo.{ontology}"
     onto_graph_class = dynamically_import_class(onto_graph_class_name)
@@ -48,21 +45,23 @@ def get_similarities(
         )
     )
 
-    compute_pairwise_ancestors_jaccard(dag=onto_graph, path=ancestors_jaccard_path)
+    compute_pairwise_ancestors_jaccard(
+        dag=onto_graph, path=ancestors_jaccard_path
+    )
 
     compute_pairwise_resnik(
         dag=onto_graph, counts=counts, path=ancestors_jaccard_path
     )
 
+
 def dynamically_import_class(name) -> object:
     """Dynamically import a class based on its reference.
+
     :param reference: The reference or path for the class to be imported.
     :return: The imported class
     """
-
     components = name.split(".")
     mod = __import__(components[0])
     for comp in components[1:]:
         this_class = getattr(mod, comp)
     return this_class
-
