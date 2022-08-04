@@ -29,6 +29,7 @@ def run(ontology: str, output_dir: str) -> None:
 
     # get ontology, make into DAG
     get_similarities(
+        ontology=ontology,
         resnik_path=os.path.join(output_dir, f"{ontology}_resnik"),
         ancestors_jaccard_path=os.path.join(output_dir, f"{ontology}_jaccard"),
     )
