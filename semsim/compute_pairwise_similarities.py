@@ -26,7 +26,7 @@ def compute_pairwise_resnik(dag: Graph, counts: Dict[str, int], path: str):
 
 
 def compute_pairwise_ancestors_jaccard(dag: Graph, path: str):
-    """Compute & store pairwise Ancestors Jaccard of provided graph at given path.
+    """Compute and store pairwise Ancestors Jaccard of graph.
 
     Parameters
     -------------------

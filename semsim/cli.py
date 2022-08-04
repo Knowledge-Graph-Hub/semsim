@@ -1,5 +1,9 @@
 """Run the semantic similarity pipeline."""
+import os
+
 import click
+
+from semsim.process_ontology import get_similarities
 
 
 @click.group()
@@ -24,6 +28,10 @@ def run(ontology: str, output_dir: str) -> None:
     print(f"ontology is {ontology}")
 
     # get ontology, make into DAG
+    get_similarities(
+        resnik_path=os.path.join(output_dir, f"{ontology}_resnik"),
+        ancestors_jaccard_path=os.path.join(output_dir, f"{ontology}_jaccard"),
+    )
 
     # make counts (Dict[curie, count])
 
