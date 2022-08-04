@@ -23,6 +23,14 @@ def run(ontology: str, output_dir: str) -> None:
     :return: None
     """
     print(f"ontology is {ontology}")
+
+    # get ontology, make into DAG
+
+    # make counts
+
+    # call compute pairwise similarity
+
+    # merge two results
     return None
 
 
