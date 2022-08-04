@@ -16,6 +16,7 @@ jaro-winkler = "2.0.0"
 grape = "^0.1.10"
 pandas = "^1.4.3"
 tox = "^3.25.1"
+click = "^8.1.3"
 
 [tool.poetry.dev-dependencies]
 Sphinx = "^5.1.1"
