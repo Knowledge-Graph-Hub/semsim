@@ -1,12 +1,12 @@
 """Process ontology and retrieve pairwise similarities."""
+
 from collections import Counter
-
-import pandas as pd
-
 from .compute_pairwise_similarities import (
     compute_pairwise_ancestors_jaccard,
     compute_pairwise_resnik,
 )
+
+import pandas as pd
 
 
 def get_similarities(
@@ -14,14 +14,10 @@ def get_similarities(
 ):
     """Compute and store similarities to the provided paths.
 
-    Parameters
-    -----------------------
-    ontology: str
-        Name of ontology to retrieve and process.
-    resnik_path: str
-        Where to store the resnik pairwise similarities.
-    ancestors_jaccard_path: str
-        Where to store the Ancestors Jaccard pairwise similarities.
+    :param ontology: str, name of ontology to retrieve and process.
+    :param resnik_path: str, where to store the resnik pairwise similarities.
+    :param ancestors_jaccard_path: str, where to store the Ancestors Jaccard
+        pairwise similarities.
     """
 
     ontology = ontology.upper()
@@ -48,14 +44,18 @@ def get_similarities(
         )
     )
 
-    compute_pairwise_ancestors_jaccard(dag=onto_graph, path=ancestors_jaccard_path)
+    compute_pairwise_ancestors_jaccard(
+        dag=onto_graph, path=ancestors_jaccard_path
+    )
 
     compute_pairwise_resnik(
-        dag=onto_graph, counts=counts, path=ancestors_jaccard_path
+        dag=onto_graph, counts=counts, path=resnik_path
     )
+
 
 def dynamically_import_class(name) -> object:
     """Dynamically import a class based on its reference.
+
     :param reference: The reference or path for the class to be imported.
     :return: The imported class
     """
@@ -65,4 +65,3 @@ def dynamically_import_class(name) -> object:
     for comp in components[1:]:
         this_class = getattr(mod, comp)
     return this_class
-
