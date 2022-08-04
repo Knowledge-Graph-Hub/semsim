@@ -8,7 +8,8 @@ from .compute_pairwise_similarities import (compute_pairwise_ancestors_jaccard,
 
 GRAPE_DATA_MOD = "grape.datasets.kgobo"
 ANNOTATION_SOURCES = {
-    "HP": "http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa"}
+    "HP": "http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa"
+}
 
 
 def get_similarities(
@@ -48,9 +49,7 @@ def get_similarities(
         dag=onto_graph, path=ancestors_jaccard_path
     )
 
-    compute_pairwise_resnik(
-        dag=onto_graph, counts=counts, path=resnik_path
-    )
+    compute_pairwise_resnik(dag=onto_graph, counts=counts, path=resnik_path)
 
 
 def import_grape_class(name) -> object:
