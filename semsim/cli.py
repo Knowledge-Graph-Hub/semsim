@@ -3,12 +3,12 @@ import click
 
 
 @click.group()
-def cli():
-    """CLI."""
+def main():
+    """MAIN."""
     pass
 
 
-@cli.command()
+@main.command()
 @click.option("--output-dir", "-o", required=False, default="data/raw")
 @click.argument(
     "ontology",
@@ -37,4 +37,4 @@ def run(ontology: str, output_dir: str) -> None:
 
 
 if __name__ == "__main__":
-    run()
+    main()
