@@ -9,19 +9,15 @@ def cli():
 
 
 @cli.command()
-@click.option("output_dir", 
-              "-o", 
-              required=True, 
-              default="data/raw"
-              )
-
-@click.option("--input",
-              "-i",
-              callback=lambda _,__,x: x.split(',') if x else [],
-              default=['HP'],
-              help="""One or more OBO Foundry ontologies to run over,
-                     comma-delimited, e.g., HP,GO,ZFA."""
-              )
+@click.option("output_dir", "-o", required=True, default="data/raw")
+@click.option(
+    "--input",
+    "-i",
+    callback=lambda _, __, x: x.split(",") if x else [],
+    default=["HP"],
+    help="""One or more OBO Foundry ontologies to run over,
+                     comma-delimited, e.g., HP,GO,ZFA.""",
+)
 def run(*args, **kwargs) -> None:
     """Run code to produce all by all semantic similarity for a ontology [HPO].
 
