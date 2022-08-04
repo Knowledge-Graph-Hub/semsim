@@ -7,6 +7,8 @@ from .compute_pairwise_similarities import (compute_pairwise_ancestors_jaccard,
                                             compute_pairwise_resnik)
 
 
+GRAPE_DATA_MOD = "grape.datasets.kgobo"
+
 def get_similarities(
     ontology: str, resnik_path: str, ancestors_jaccard_path: str
 ):
@@ -18,8 +20,7 @@ def get_similarities(
         pairwise similarities.
     """
     ontology = ontology.upper()
-    onto_graph_class_name = f"grape.datasets.kgobo.{ontology}"
-    onto_graph_class = dynamically_import_class(onto_graph_class_name)
+    onto_graph_class = import_grape_class(ontology)
 
     onto_graph = (
         onto_graph_class(directed=True)
@@ -50,14 +51,13 @@ def get_similarities(
     )
 
 
-def dynamically_import_class(name) -> object:
-    """Dynamically import a class based on its reference.
+def import_grape_class(name) -> object:
+    """Dynamically import a Grape class based on its reference.
 
     :param reference: The reference or path for the class to be imported.
     :return: The imported class
     """
-    components = name.split(".")
-    mod = __import__(components[0])
-    for comp in components[1:]:
-        this_class = getattr(mod, comp)
+
+    mod = __import__(GRAPE_DATA_MOD, fromlist=[name])
+    this_class = getattr(mod, name)
     return this_class
