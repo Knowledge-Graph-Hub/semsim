@@ -1,7 +1,9 @@
+"""Compute pairwose similarities."""
 from typing import Dict
+
 import pandas as pd
-from grape.similarities import DAGResnik
 from grape import Graph
+from grape.similarities import DAGResnik
 
 
 def compute_pairwise_resnik(dag: Graph, counts: Dict[str, int], path: str):
@@ -17,18 +19,14 @@ def compute_pairwise_resnik(dag: Graph, counts: Dict[str, int], path: str):
         The path where to store the pairwise similarity.
     """
     model = DAGResnik()
-    model.fit(
-        dag,
-        node_counts=counts
-    )
+    model.fit(dag, node_counts=counts)
     model.get_pairwise_similarities(
-        graph=dag,
-        return_similarities_dataframe=True
+        graph=dag, return_similarities_dataframe=True
     ).to_csv(path, index=True, header=True)
 
 
 def compute_pairwise_ancestors_jaccard(dag: Graph, path: str):
-    """Compute and store pairwise Ancestors Jaccard of the provided graph at given path.
+    """Compute & store pairwise Ancestors Jaccard of provided graph at given path.
 
     Parameters
     -------------------
@@ -41,10 +39,10 @@ def compute_pairwise_ancestors_jaccard(dag: Graph, path: str):
         dag.get_shared_ancestors_jaccard_adjacency_matrix(
             dag.get_breadth_first_search_from_node_names(
                 src_node_name=dag.get_root_node_names()[0],
-                compute_predecessors=True
+                compute_predecessors=True,
             ),
-            verbose=True
+            verbose=True,
         ),
         columns=dag.get_node_names(),
-        index=dag.get_node_names()
+        index=dag.get_node_names(),
     ).to_csv(path, index=True, header=True)
