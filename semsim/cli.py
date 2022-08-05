@@ -14,8 +14,9 @@ def main():
 
 @main.command()
 @click.option("--output-dir", "-o", required=False, default="data")
+@click.option("--annot_col", "-c", required=False, default="HPO_ID")
 @click.argument("ontology", default="HP")
-def run(ontology: str, output_dir: str) -> None:
+def run(ontology: str, annot_col: str, output_dir: str) -> None:
     """Generate a file containing the semantic similarity.
 
     (Resnik and Jaccard) for each pair of terms in an ontology
@@ -23,6 +24,7 @@ def run(ontology: str, output_dir: str) -> None:
 
     :param ontology: An OBO Foundry ontology on which to compute sem sim [HP]
     :param output_dir: Path to write file of all by all sem sim measurements
+    :param annot_col: name of column in annotation file containing onto IDs
     :return: None
     """
     print(f"ontology is {ontology}")
@@ -31,19 +33,18 @@ def run(ontology: str, output_dir: str) -> None:
         os.mkdir(output_dir)
 
     # get ontology, make into DAG
-    get_similarities(
+    # make counts (Dict[curie, count])
+    # call compute pairwise similarity
+    # write out
+    outpaths = get_similarities(
         ontology=ontology,
+        annot_col=annot_col,
         resnik_path=os.path.join(output_dir, f"{ontology}_resnik"),
         ancestors_jaccard_path=os.path.join(output_dir, f"{ontology}_jaccard"),
     )
 
-    # make counts (Dict[curie, count])
+    print(outpaths)
 
-    # call compute pairwise similarity
-
-    # merge two results
-
-    # write out
     return None
 
 

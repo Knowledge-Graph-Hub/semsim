@@ -12,9 +12,11 @@ ANNOTATION_SOURCES = {"HP":
                       }
 
 
-def get_similarities(
-    ontology: str, resnik_path: str, ancestors_jaccard_path: str
-):
+def get_similarities(ontology: str,
+                     annot_col: str,
+                     resnik_path: str,
+                     ancestors_jaccard_path: str
+                     ):
     """Compute and store similarities to the provided paths.
 
     :param ontology: str, name of ontology to retrieve and process.
@@ -41,7 +43,7 @@ def get_similarities(
                 ANNOTATION_SOURCES[ontology],
                 sep="\t",
                 skiprows=4,
-            ).HPO_ID
+            ).annot_col
         )
     )
 
