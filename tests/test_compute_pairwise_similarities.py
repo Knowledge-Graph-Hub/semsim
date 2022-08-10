@@ -1,4 +1,4 @@
-"""Test compute_pairwise_similarities"""
+"""Test compute_pairwise_similarities."""
 
 import os
 from unittest import TestCase
@@ -7,7 +7,7 @@ from grape import Graph
 
 from semsim.compute_pairwise_similarities import (
     compute_pairwise_ancestors_jaccard,
-    compute_pairwise_resnik,
+    compute_pairwise_resnik
 )
 
 
@@ -57,8 +57,6 @@ class TestComputePairwiseSimilarities(TestCase):
             "HP:0045027": 1,
             "HP:0000152": 1
         }
-        nodemap = self.test_graph.get_nodes_mapping()
-        print(nodemap)
 
     def test_compute_pairwise_resnik(self) -> None:
         """Test pairwise Resnik computation."""
@@ -77,5 +75,6 @@ class TestComputePairwiseSimilarities(TestCase):
         self.assertTrue(os.path.exists(self.jaccard_outpath))
 
     def tearDown(self):
+        """Clean up from the tests."""
         os.remove(self.resnik_outpath)
         os.remove(self.jaccard_outpath)
