@@ -5,7 +5,7 @@ import pandas as pd
 
 from .compute_pairwise_similarities import (
     compute_pairwise_ancestors_jaccard,
-    compute_pairwise_resnik,
+    compute_pairwise_resnik
 )
 
 GRAPE_DATA_MOD = "grape.datasets.kgobo"

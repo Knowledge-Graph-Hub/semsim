@@ -7,7 +7,7 @@ from grape import Graph
 
 from semsim.compute_pairwise_similarities import (
     compute_pairwise_ancestors_jaccard,
-    compute_pairwise_resnik,
+    compute_pairwise_resnik
 )
 
 
@@ -78,7 +78,6 @@ class TestComputePairwiseSimilarities(TestCase):
 
     def test_compute_pairwise_resnik(self) -> None:
         """Test pairwise Resnik computation."""
-
         compute_pairwise_resnik(
             dag=self.test_graph,
             counts=self.test_counts,
@@ -92,8 +91,3 @@ class TestComputePairwiseSimilarities(TestCase):
             dag=self.test_graph, path=self.jaccard_outpath
         )
         self.assertTrue(os.path.exists(self.jaccard_outpath))
-
-    # def tearDown(self):
-    #    """Clean up from the tests."""
-    #    os.remove(self.resnik_outpath)
-    #    os.remove(self.jaccard_outpath)
