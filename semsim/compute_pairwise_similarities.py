@@ -6,9 +6,9 @@ from grape import Graph
 from grape.similarities import DAGResnik
 
 
-def compute_pairwise_resnik(dag: Graph,
-                            counts: Dict[str, int], path: str
-                            ) -> str:
+def compute_pairwise_resnik(
+    dag: Graph, counts: Dict[str, int], path: str
+) -> str:
     """Compute and store pairwise Resnik of the provided graph at given path.
 
     Parameters
