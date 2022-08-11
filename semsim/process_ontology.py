@@ -3,7 +3,7 @@ from collections import Counter
 
 import pandas as pd
 
-from .compute_pairwise_similarities import (
+from .compute_pairwise_similarities import (  # noqa
     compute_pairwise_ancestors_jaccard,
     compute_pairwise_resnik
 )
