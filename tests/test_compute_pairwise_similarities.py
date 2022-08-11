@@ -29,7 +29,7 @@ class TestComputePairwiseSimilarities(TestCase):
             sources_column="subject",
             destinations_column="object",
             edge_list_edge_types_column="predicate",
-        )
+        ).to_transposed()  # To define root correctly
         self.test_counts = {
             "HP:0000118": 23,
             "HP:0000001": 24,
@@ -64,10 +64,10 @@ class TestComputePairwiseSimilarities(TestCase):
         node2 = "HP:0001197"
         rootnode = "HP:0000001"
         path1 = self.test_graph.get_shortest_path_node_names_from_node_names(
-            node1, rootnode
+            rootnode, node1
         )
         path2 = self.test_graph.get_shortest_path_node_names_from_node_names(
-            node2, rootnode
+            rootnode, node2
         )
         check = False
         for node in path1:
