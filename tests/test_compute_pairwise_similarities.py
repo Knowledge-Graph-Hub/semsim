@@ -58,8 +58,27 @@ class TestComputePairwiseSimilarities(TestCase):
             "HP:0000152": 1,
         }
 
+    def test_common_ancestry(self) -> None:
+        """Test that two nodes have common ancestor."""
+        node1 = "HP:0000152"
+        node2 = "HP:0001197"
+        rootnode = "HP:0000001"
+        path1 = self.test_graph.get_shortest_path_node_names_from_node_names(
+            node1, rootnode
+        )
+        path2 = self.test_graph.get_shortest_path_node_names_from_node_names(
+            node2, rootnode
+        )
+        check = False
+        for node in path1:
+            if node in path2:
+                check = True
+                break
+        self.assertTrue(check)
+
     def test_compute_pairwise_resnik(self) -> None:
         """Test pairwise Resnik computation."""
+
         compute_pairwise_resnik(
             dag=self.test_graph,
             counts=self.test_counts,
@@ -74,7 +93,7 @@ class TestComputePairwiseSimilarities(TestCase):
         )
         self.assertTrue(os.path.exists(self.jaccard_outpath))
 
-    def tearDown(self):
-        """Clean up from the tests."""
-        os.remove(self.resnik_outpath)
-        os.remove(self.jaccard_outpath)
+    # def tearDown(self):
+    #    """Clean up from the tests."""
+    #    os.remove(self.resnik_outpath)
+    #    os.remove(self.jaccard_outpath)
