@@ -3,8 +3,10 @@ from collections import Counter
 
 import pandas as pd
 
-from .compute_pairwise_similarities import (compute_pairwise_ancestors_jaccard,
-                                            compute_pairwise_resnik)
+from .compute_pairwise_similarities import (
+    compute_pairwise_ancestors_jaccard,
+    compute_pairwise_resnik,
+)
 
 GRAPE_DATA_MOD = "grape.datasets.kgobo"
 ANNOTATION_SOURCES = {
