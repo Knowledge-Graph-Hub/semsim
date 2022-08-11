@@ -42,8 +42,8 @@ jobs:
     #              run tox
     #----------------------------------------------
     - name: Lint with flake8
-      run: tox -e flake8
+      run: poetry run tox -e flake8
     - name: Test with MyPy
-      run: tox -e mypy
+      run: poetry run tox -e mypy
     - name: Test with pytest
-      run: tox -e py
+      run: poetry run tox -e py
