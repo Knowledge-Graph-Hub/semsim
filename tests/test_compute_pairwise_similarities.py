@@ -6,9 +6,7 @@ from unittest import TestCase
 from grape import Graph
 
 from semsim.compute_pairwise_similarities import (
-    compute_pairwise_ancestors_jaccard,
-    compute_pairwise_resnik
-)
+    compute_pairwise_ancestors_jaccard, compute_pairwise_resnik)
 
 
 class TestComputePairwiseSimilarities(TestCase):
@@ -18,8 +16,8 @@ class TestComputePairwiseSimilarities(TestCase):
         """Set up."""
         self.test_graph_path_nodes = "tests/resources/test_hpo_nodes.tsv"
         self.test_graph_path_edges = "tests/resources/test_hpo_edges.tsv"
-        self.resnik_outpath = "tests/resnik_out"
-        self.jaccard_outpath = "tests/jaccard_out"
+        self.resnik_outpath = "tests/output/resnik_out"
+        self.jaccard_outpath = "tests/output/jaccard_out"
         self.test_graph = Graph.from_csv(
             directed=True,
             node_path=self.test_graph_path_nodes,
@@ -55,7 +53,7 @@ class TestComputePairwiseSimilarities(TestCase):
             "HP:0000598": 1,
             "HP:0000769": 1,
             "HP:0045027": 1,
-            "HP:0000152": 1
+            "HP:0000152": 1,
         }
 
     def test_compute_pairwise_resnik(self) -> None:

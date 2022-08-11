@@ -7,16 +7,17 @@ from .compute_pairwise_similarities import (compute_pairwise_ancestors_jaccard,
                                             compute_pairwise_resnik)
 
 GRAPE_DATA_MOD = "grape.datasets.kgobo"
-ANNOTATION_SOURCES = {"HP":
-                      "http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa"
-                      }
+ANNOTATION_SOURCES = {
+    "HP": "http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa"
+}
 
 
-def get_similarities(ontology: str,
-                     annot_col: str,
-                     resnik_path: str,
-                     ancestors_jaccard_path: str
-                     ):
+def get_similarities(
+    ontology: str,
+    annot_col: str,
+    resnik_path: str,
+    ancestors_jaccard_path: str,
+):
     """Compute and store similarities to the provided paths.
 
     :param ontology: str, name of ontology to retrieve and process.
@@ -51,9 +52,7 @@ def get_similarities(ontology: str,
         dag=onto_graph, path=ancestors_jaccard_path
     )
 
-    compute_pairwise_resnik(
-        dag=onto_graph, counts=counts, path=resnik_path
-    )
+    compute_pairwise_resnik(dag=onto_graph, counts=counts, path=resnik_path)
 
 
 def import_grape_class(name) -> object:
