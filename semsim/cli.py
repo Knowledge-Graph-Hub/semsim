@@ -62,6 +62,7 @@ def mp_hp(
     output_dir: str,
 ) -> None:
     """Produce an MP-HP phenodigm file.
+
     That is, a file containing the Resnik and Jaccard similarity
     for pairs of MP-HP phenotypes that meet some minimal level of
     Resnik similarity (default: 2.5).
@@ -75,7 +76,6 @@ def mp_hp(
     :param output_dir: where to write out file
     :return: None
     """
-
     # read HP-HP Jaccard sim data into pd dataframe
     # read HP-HP Resnik sim data into pd dataframe
     # read in mp_hp_mapping_file mapping file
