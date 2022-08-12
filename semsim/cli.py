@@ -50,9 +50,18 @@ def run(ontology: str, annot_col: str, output_dir: str) -> None:
 
 @main.command()
 @click.option("--output", "-o", required=False, default="data")
-@click.option("--mp_hp_mapping_file", "-m", required=True)
-@click.option("--hp_hp_resnik_sim_file", "-h", required=True)
-@click.option("--hp_hp_jaccard_sim_file", "-h", required=True)
+@click.option(
+    "--mp_hp_mapping_file",
+    "-m",
+    required=True,
+    default="data/hp-mp-phenodigm-cache.txt",
+)
+@click.option(
+    "--hp_hp_resnik_sim_file", "-h", required=True, default="data/HP_resnik"
+)
+@click.option(
+    "--hp_hp_jaccard_sim_file", "-h", required=True, default="data/HP_jaccard"
+)
 @click.option("--cutoff", "-c", required=True, default=2.5)
 def mp_hp(
     cutoff: str,
