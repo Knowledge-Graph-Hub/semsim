@@ -31,6 +31,7 @@ def make_phenodigm(
     """
 
     # Check for existence of all input files first
+    # and load them if they're present
     for filepath in [
         same_jaccard_sim_file,
         same_resnik_sim_file,
@@ -38,5 +39,13 @@ def make_phenodigm(
     ]:
         if not os.path.exists(filepath):
             raise FileNotFoundError(f"Cannot find {filepath}!")
+        else:
+            print(f"Loading {filepath}...")
+        if filepath.endswith("jaccard"):
+            jaccard_df = pd.read_csv(filepath, sep="\t", engine="c")
+        if filepath.endswith("resnik"):
+            resnik_df = pd.read_csv(filepath, sep="\t", engine="c")
+        if filepath.endswith("hp-mp-phenodigm-cache.txt"):
+            map_pairs_df = pd.read_csv(filepath, sep="\t", engine="c")
 
     return outpath
