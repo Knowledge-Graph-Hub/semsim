@@ -3,6 +3,7 @@ import os
 
 import click
 
+from semsim.get_phenodigm_pairs import make_phenodigm
 from semsim.process_ontology import get_similarities
 
 
@@ -13,7 +14,7 @@ def main():
 
 
 @main.command()
-@click.option("--output", "-o", required=False, default="data")
+@click.option("--output_dir", "-o", required=False, default="data")
 @click.option("--annot_col", "-c", required=False, default="HPO_ID")
 @click.argument("ontology", default="HP")
 def run(ontology: str, annot_col: str, output_dir: str) -> None:
@@ -49,7 +50,7 @@ def run(ontology: str, annot_col: str, output_dir: str) -> None:
 
 
 @main.command()
-@click.option("--output", "-o", required=False, default="data")
+@click.option("--output_dir", "-o", required=False, default="data")
 @click.option(
     "--mp_hp_mapping_file",
     "-m",
@@ -97,6 +98,15 @@ def mp_hp(
     # We should recreate this phenodigm file format:
     # HP_3000028      MP_0006153      0.2647058823529412      2.5123772659440853      HP_0000271; # noqa
     # HP_3000028      MP_0006152      0.25    2.5123772659440853      HP_0000271; # noqa
+
+    outpath = make_phenodigm(
+        cutoff=cutoff,
+        same_jaccard_sim_file=hp_hp_jaccard_sim_file,
+        same_resnik_sim_file=hp_hp_resnik_sim_file,
+        mapping_file=mp_hp_mapping_file,
+        outpath=os.path.join(output_dir, "mp_hp_phenodigm_semsim.txt")
+    )
+    print(f"Wrote to {outpath}.")
 
     return None
 
