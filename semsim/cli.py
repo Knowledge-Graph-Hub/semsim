@@ -70,6 +70,15 @@ def mp_hp(cutoff: str,
     :param output_dir: where to write out file
     :return: None
     """
+
+    # read HP-HP Jaccard sim data into pd dataframe
+    # read HP-HP Resnik sim data into pd dataframe
+    # read in mp_hp_mapping_file mapping file
+    # foreach pair P of equivalent MP-HP terms
+    #    select row R for HP term in Resnik
+    #    select column names in row R for cols in which value > cutoff
+    #    write rows in output file for MP term, HP term, Resnik, Jaccard, subsuming HP term
+
     return None
 
 
