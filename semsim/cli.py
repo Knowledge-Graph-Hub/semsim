@@ -76,8 +76,12 @@ def mp_hp(cutoff: str,
     # read in mp_hp_mapping_file mapping file
     # foreach pair P of equivalent MP-HP terms
     #    select row R for HP term in Resnik
-    #    select column names in row R for cols in which value > cutoff
-    #    write rows in output file for MP term, HP term, Resnik, Jaccard, subsuming HP term
+    #    select HP column names HPC in row R for cols in which value > cutoff
+    #    for each HPC:
+    #        write 1 row in output file for HP term, MP term, Resnik, Jaccard, subsuming HP term
+
+    # HP_3000028      MP_0006153      0.2647058823529412      2.5123772659440853      HP_0000271;
+    # HP_3000028      MP_0006152      0.25    2.5123772659440853      HP_0000271;
 
     return None
 
