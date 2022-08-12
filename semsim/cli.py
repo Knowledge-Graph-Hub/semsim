@@ -1,6 +1,5 @@
 """Run the semantic similarity pipeline."""
 import os
-from tkinter import N
 
 import click
 
@@ -48,24 +47,30 @@ def run(ontology: str, annot_col: str, output_dir: str) -> None:
 
     return None
 
+
 @main.command()
 @click.option("--output", "-o", required=False, default="data")
 @click.option("--mp_hp_mapping_file", "-m", required=True)
 @click.option("--hp_hp_resnik_sim_file", "-h", required=True)
 @click.option("--hp_hp_jaccard_sim_file", "-h", required=True)
 @click.option("--cutoff", "-c", required=True, default=2.5)
-def mp_hp(cutoff: str,
-          hp_hp_jaccard_sim_file: str,
-          hp_hp_resnik_sim_file: str,
-          mp_hp_mapping_file: str,
-          output_dir: str
-          ) -> None:
-    """Produce an MP-HP phenodigm file - that is, a file containing the Resnik and Jaccard similarity
-    for pairs of MP-HP phenotypes that meet some minimal level of Resnik similarity (default: 2.5)
+def mp_hp(
+    cutoff: str,
+    hp_hp_jaccard_sim_file: str,
+    hp_hp_resnik_sim_file: str,
+    mp_hp_mapping_file: str,
+    output_dir: str,
+) -> None:
+    """Produce an MP-HP phenodigm file.
+    That is, a file containing the Resnik and Jaccard similarity
+    for pairs of MP-HP phenotypes that meet some minimal level of
+    Resnik similarity (default: 2.5).
 
     :param cutoff: cutoff HP-HP resnik similarity in order to keep a row
-    :param hp_hp_jaccard_sim_file: all pairwse HP-HP Jaccard scores (produced from run command)
-    :param hp_hp_resnik_sim_file: all pairwise HP-HP Resnik scores (produced from run commnad)
+    :param hp_hp_jaccard_sim_file: all pairwse HP-HP Jaccard scores
+        (produced from run command)
+    :param hp_hp_resnik_sim_file: all pairwise HP-HP Resnik scores
+        (produced from run commnad)
     :param mp_hp_mapping_file: file containing all equivalent MP-HP phenotypes
     :param output_dir: where to write out file
     :return: None
