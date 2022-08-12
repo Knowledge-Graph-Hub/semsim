@@ -45,5 +45,5 @@ jobs:
       run: poetry run tox -e flake8
     - name: Test with MyPy
       run: poetry run tox -e mypy
-    # - name: Test with pytest
-    #   run: poetry run pytest
+    - name: Test with pytest
+      run: poetry run tox -e py

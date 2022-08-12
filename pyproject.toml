@@ -10,9 +10,11 @@ authors = [
 readme = "README.md"
 license = "BSD3"
 
+[tool.poetry.scripts]
+semsim = "semsim.cli:main"
+
 [tool.poetry.dependencies]
 python = "^3.9"
-jaro-winkler = "2.0.0"
 grape = "^0.1.10"
 pandas = "^1.4.3"
 tox = "^3.25.1"
