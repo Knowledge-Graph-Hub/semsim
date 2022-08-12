@@ -45,9 +45,38 @@ def make_phenodigm(
         if filepath.endswith("resnik"):
             resnik_df = pd.read_csv(filepath, sep="\t", engine="c")
         if filepath.endswith("upheno_mapping_all.csv"):
-            map_df = pd.read_csv(filepath, sep=",", engine="c")
+            map_df = pd.read_csv(
+                filepath, sep=",", engine="c", usecols=["p1", "p2"]
+            )
+            filtermap_df = make_hp_mp_map(map_df)
 
- #   with open(outpath,'w') as outfile:
-
+    #   with open(outpath,'w') as outfile:
 
     return outpath
+
+
+def make_hp_mp_map(all_map: pd.DataFrame) -> pd.DataFrame:
+    """Produce a map specific to HP vs. MP terms.
+
+    :param all_map: pandas df of two columns,
+        with one term in col 1 and the equivalent
+        term in col 2.
+    :return: pandas df with all HP terms (and only these)
+        in col 1 and equivalent MP terms (and only these)
+        in col 2.
+    """
+    for col in ["p1", "p2"]:
+        all_map[col] = all_map[col].map(
+            lambda x: ((x.split("/"))[-1]).replace("_", ":")
+        )
+        all_map = all_map[all_map[col].str.contains("HP|MP")]
+
+    for newcol in ["HP_term", "MP_term"]:
+        all_map[newcol] = ""
+        prefix = (newcol.split("_"))[0]
+        for col in ["p1", "p2"]:
+            all_map.loc[all_map[col].str.startswith(prefix), newcol] = all_map[
+                col
+            ]
+
+    return all_map
