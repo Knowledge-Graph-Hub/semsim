@@ -60,7 +60,8 @@ def mp_hp(cutoff: str,
           mp_hp_mapping_file: str,
           output_dir: str
           ) -> None:
-    """_summary_
+    """Produce an MP-HP phenodigm file - that is, a file containing the Resnik and Jaccard similarity
+    for pairs of MP-HP phenotypes that meet some minimal level of Resnik similarity (default: 2.5)
 
     :param cutoff: cutoff HP-HP resnik similarity in order to keep a row
     :param hp_hp_jaccard_sim_file: all pairwse HP-HP Jaccard scores (produced from run command)
