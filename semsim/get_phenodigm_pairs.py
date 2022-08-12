@@ -46,6 +46,15 @@ def make_phenodigm(
         if filepath.endswith("resnik"):
             resnik_df = pd.read_csv(filepath, sep="\t", engine="c")
         if filepath.endswith("hp-mp-phenodigm-cache.txt"):
-            map_pairs_df = pd.read_csv(filepath, sep="\t", engine="c")
+            map_pairs_df = pd.read_csv(
+                filepath,
+                sep="\t",
+                engine="c",
+                usecols=[0, 1, 4],
+                names=["HP", "MP", "Subsumer"],
+            )
+            map_pairs_df["Subsumer"] = map_pairs_df["Subsumer"].map(
+                lambda x: x.rstrip(";")
+            )
 
     return outpath
