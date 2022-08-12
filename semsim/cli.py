@@ -80,6 +80,7 @@ def mp_hp(cutoff: str,
     #    for each HPC:
     #        write 1 row in output file for HP term, MP term, Resnik, Jaccard, subsuming HP term
 
+    # We should recreate this phenodigm file format:
     # HP_3000028      MP_0006153      0.2647058823529412      2.5123772659440853      HP_0000271;
     # HP_3000028      MP_0006152      0.25    2.5123772659440853      HP_0000271;
 
