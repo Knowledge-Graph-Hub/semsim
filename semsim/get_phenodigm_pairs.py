@@ -29,7 +29,6 @@ def make_phenodigm(
     :param outpath: where to write out file
     :return: str, path to output
     """
-
     # Check for existence of all input files first
     # and load them if they're present
     for filepath in [
@@ -45,16 +44,10 @@ def make_phenodigm(
             jaccard_df = pd.read_csv(filepath, sep="\t", engine="c")
         if filepath.endswith("resnik"):
             resnik_df = pd.read_csv(filepath, sep="\t", engine="c")
-        if filepath.endswith("hp-mp-phenodigm-cache.txt"):
-            map_pairs_df = pd.read_csv(
-                filepath,
-                sep="\t",
-                engine="c",
-                usecols=[0, 1, 4],
-                names=["HP", "MP", "Subsumer"],
-            )
-            map_pairs_df["Subsumer"] = map_pairs_df["Subsumer"].map(
-                lambda x: x.rstrip(";")
-            )
+        if filepath.endswith("upheno_mapping_all.csv"):
+            map_df = pd.read_csv(filepath, sep=",", engine="c")
+
+ #   with open(outpath,'w') as outfile:
+
 
     return outpath

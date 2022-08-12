@@ -55,7 +55,7 @@ def run(ontology: str, annot_col: str, output_dir: str) -> None:
     "--mp_hp_mapping_file",
     "-m",
     required=True,
-    default="data/hp-mp-phenodigm-cache.txt",
+    default="data/upheno_mapping_all.csv",
 )
 @click.option(
     "--hp_hp_resnik_sim_file", "-h", required=True, default="data/HP_resnik"
