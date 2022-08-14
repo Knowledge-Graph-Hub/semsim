@@ -44,34 +44,41 @@ def make_phenodigm(
             jaccard_df = pd.read_csv(filepath, sep="\t", engine="c")
         if filepath.endswith("resnik"):
             resnik_df = pd.read_csv(filepath, sep="\t", engine="c")
-        if filepath.endswith("upheno_mapping_all.csv"):
+        if filepath == mapping_file:
             map_df = pd.read_csv(
                 filepath, sep=",", engine="c", usecols=["p1", "p2"]
             )
-            filtermap_df = make_hp_mp_map(map_df)
+            filtermap_df = make_filtered_map(map_df, "HP", "MP")
 
     #   with open(outpath,'w') as outfile:
 
     return outpath
 
 
-def make_hp_mp_map(all_map: pd.DataFrame) -> pd.DataFrame:
-    """Produce a map specific to HP vs. MP terms.
+def make_filtered_map(
+    all_map: pd.DataFrame, prefixA: str, prefixB: str
+) -> pd.DataFrame:
+    """Produce a map specific to two specific prefixed terms.
 
+    This makes some assumptions about the input file,
+    namely that the terms will be in columns with
+    the headers "p1" and "p2", and that 
     :param all_map: pandas df of two columns,
         with one term in col 1 and the equivalent
         term in col 2.
-    :return: pandas df with all HP terms (and only these)
-        in col 1 and equivalent MP terms (and only these)
+    :param prefixA: str, first prefix to filter by
+    :param prefixB: str, second prefix to filter by
+    :return: pandas df with all prefixA terms (and only these)
+        in col 1 and equivalent prefixB terms (and only these)
         in col 2.
     """
     for col in ["p1", "p2"]:
         all_map[col] = all_map[col].map(
             lambda x: ((x.split("/"))[-1]).replace("_", ":")
         )
-        all_map = all_map[all_map[col].str.contains("HP|MP")]
+        all_map = all_map[all_map[col].str.contains(f"{prefixA}|{prefixB}")]
 
-    for newcol in ["HP_term", "MP_term"]:
+    for newcol in [f"{prefixA}_term", f"{prefixB}_term"]:
         all_map[newcol] = ""
         prefix = (newcol.split("_"))[0]
         for col in ["p1", "p2"]:
