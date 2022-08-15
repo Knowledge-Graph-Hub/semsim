@@ -29,6 +29,10 @@ def make_phenodigm(
     :param outpath: where to write out file
     :return: str, path to output
     """
+
+    prefixa = "HP"
+    prefixb = "MP"
+
     # Check for existence of all input files first
     # and load them if they're present
     for filepath in [
@@ -41,16 +45,28 @@ def make_phenodigm(
         else:
             print(f"Loading {filepath}...")
         if filepath.endswith("jaccard"):
-            jaccard_df = pd.read_csv(filepath, sep="\t", engine="c")
+            jaccard_df = pd.read_csv(filepath, sep=",", engine="c")
+            jaccard_df.rename({'Unnamed: 0': prefixa}, axis=1, inplace=True)
         if filepath.endswith("resnik"):
-            resnik_df = pd.read_csv(filepath, sep="\t", engine="c")
+            resnik_df = pd.read_csv(filepath, sep=",", engine="c")
+            resnik_df.rename({'Unnamed: 0': prefixa}, axis=1, inplace=True)
         if filepath == mapping_file:
             map_df = pd.read_csv(
                 filepath, sep=",", engine="c", usecols=["p1", "p2"]
             )
-            filtermap_df = make_filtered_map(map_df, "HP", "MP")
+            filtermap_df = make_filtered_map(map_df, prefixa, prefixb)
 
-    # Get Resnik score for 
+    # For each A term in the filtered map, get Resnik score above cutoff.
+    # specifically, get a list of matching rows and then make a df out
+    # of them
+    match_data = []
+    for term in filtermap_df[prefixa]:
+        print(term)
+        # matches = resnik_df.iloc[
+        #     (resnik_df[0] == term) & (resnik_df[1:] > cutoff)
+        # ]
+        # for match in matches:
+        #     match_data.append(term)
 
     return outpath
 
@@ -78,7 +94,7 @@ def make_filtered_map(
         )
         all_map = all_map[all_map[col].str.contains(f"{prefixa}|{prefixb}")]
 
-    for newcol in [f"{prefixa}_term", f"{prefixb}_term"]:
+    for newcol in [prefixa, prefixb]:
         all_map[newcol] = ""
         prefix = (newcol.split("_"))[0]
         for col in ["p1", "p2"]:
