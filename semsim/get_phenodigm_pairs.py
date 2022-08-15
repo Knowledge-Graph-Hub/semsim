@@ -76,8 +76,8 @@ def make_phenodigm(
                 error_data.append(term)  # Some terms may not have scores
 
     # Include MP term, Jaccard score, subsumer term
-
-    match_data.to_csv(outpath, index=False, header=False)
+    full_df = pd.DataFrame(match_data, columns=[prefixa, prefixb, "resnik"])
+    full_df.to_csv(outpath, index=False, header=False)
 
     print("The following terms had errors:")
     print("\n".join(error_data))
