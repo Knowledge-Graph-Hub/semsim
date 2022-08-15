@@ -3,6 +3,7 @@
 import os
 
 import pandas as pd
+from tqdm import tqdm
 
 
 def make_phenodigm(
@@ -46,10 +47,10 @@ def make_phenodigm(
             print(f"Loading {filepath}...")
         if filepath.endswith("jaccard"):
             jaccard_df = pd.read_csv(filepath, sep=",", engine="c")
-            jaccard_df.rename({'Unnamed: 0': prefixa}, axis=1, inplace=True)
+            jaccard_df.rename({"Unnamed: 0": prefixa}, axis=1, inplace=True)
         if filepath.endswith("resnik"):
             resnik_df = pd.read_csv(filepath, sep=",", engine="c")
-            resnik_df.rename({'Unnamed: 0': prefixa}, axis=1, inplace=True)
+            resnik_df.rename({"Unnamed: 0": prefixa}, axis=1, inplace=True)
         if filepath == mapping_file:
             map_df = pd.read_csv(
                 filepath, sep=",", engine="c", usecols=["p1", "p2"]
@@ -59,14 +60,27 @@ def make_phenodigm(
     # For each A term in the filtered map, get Resnik score above cutoff.
     # specifically, get a list of matching rows and then make a df out
     # of them
-    match_data = []
-    for term in filtermap_df[prefixa]:
-        print(term)
-        # matches = resnik_df.iloc[
-        #     (resnik_df[0] == term) & (resnik_df[1:] > cutoff)
-        # ]
-        # for match in matches:
-        #     match_data.append(term)
+    match_data = []  # List of lists, for efficiency
+    error_data = []
+    print(
+        f"Finding {prefixa} term matches based on Resnik scores, "
+        f"cutoff {cutoff}..."
+    )
+    for term in tqdm(set(filtermap_df[prefixa])):
+        matches = resnik_df.loc[(resnik_df[prefixa] == term)]
+        for match in matches.iloc[0:1, 1:]:
+            try:
+                if float(matches[match].values[0]) > cutoff:
+                    match_data.append([term, match, matches[match].values[0]])
+            except TypeError:
+                error_data.append(term)  # Some terms may not have scores
+
+    # Include MP term, Jaccard score, subsumer term
+
+    match_data.to_csv(outpath, index=False, header=False)
+
+    print("The following terms had errors:")
+    print("\n".join(error_data))
 
     return outpath
 
