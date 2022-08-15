@@ -19,7 +19,6 @@ def make_phenodigm(
     Output is a path to a file containing the Resnik and Jaccard
     similarity for pairs of phenotypes that meet some minimal
     level of Resnik similarity (default: 2.5).
-
     :param cutoff: cutoff Resnik similarity in order to keep a row
     :param same_jaccard_sim_file: all pairwise self vs. self Jaccard scores
         (produced from semsim run command)
@@ -80,7 +79,7 @@ def make_phenodigm(
     full_df.to_csv(outpath, index=False, header=False)
 
     print("The following terms had errors:")
-    print("\n".join(error_data))
+    print("\n".join(list(set(error_data))))
 
     return outpath
 
