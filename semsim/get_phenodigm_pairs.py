@@ -72,7 +72,7 @@ def make_phenodigm(
             try:
                 if float(matches[match].values[0]) > cutoff:
                     match_data.append([term, match, matches[match].values[0]])
-            except TypeError:
+            except (TypeError, IndexError):
                 error_data.append(term)  # Some terms may not have scores
 
     # Include MP term, Jaccard score, subsumer term
