@@ -33,7 +33,6 @@ def make_phenodigm(
     :param prefixb: prefix of second ontology, e.g. 'MP'
     :return: str, path to output
     """
-
     # Check for existence of all input files first
     # and load them if they're present
     for filepath in [
