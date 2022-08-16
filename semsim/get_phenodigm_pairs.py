@@ -66,7 +66,7 @@ def make_phenodigm(
         f"Finding {prefixa} term matches based on Resnik scores, "
         f"cutoff {cutoff}..."
     )
-    for term in tqdm(set(filtermap_df[prefixa])):
+    for term in tqdm(set(filtermap_df[prefixa + "_id"])):
         matches = resnik_df.loc[(resnik_df[prefixa] == term)]
         for match in matches.iloc[0:1, 1:]:
             try:
@@ -77,10 +77,21 @@ def make_phenodigm(
 
     # Include MP term, Jaccard score, subsumer term
     full_df = pd.DataFrame(match_data, columns=[prefixa, prefixb, "resnik"])
+    full_df = pd.merge(
+        left=full_df,
+        right=filtermap_df,
+        how="inner",
+        left_on=prefixb,
+        right_on=prefixa + "_id",
+    )
+    full_df.drop(columns=[prefixb, prefixa + "_id"], inplace=True)
+    full_df.rename({prefixb + "_id": prefixb}, axis=1, inplace=True)
+
     full_df.to_csv(outpath, index=False, header=False)
 
-    print("The following terms had errors:")
-    print("\n".join(list(set(error_data))))
+    if len(error_data) > 0:
+        print("The following terms had errors:")
+        print("\n".join(list(set(error_data))))
 
     return outpath
 
@@ -115,5 +126,12 @@ def make_filtered_map(
             all_map.loc[all_map[col].str.startswith(prefix), newcol] = all_map[
                 col
             ]
+
+    all_map.drop(columns=["p1", "p2"], inplace=True)
+    all_map.rename(
+        {prefixa: prefixa + "_id", prefixb: prefixb + "_id"},
+        axis=1,
+        inplace=True,
+    )
 
     return all_map
