@@ -104,7 +104,9 @@ def mp_hp(
         same_jaccard_sim_file=hp_hp_jaccard_sim_file,
         same_resnik_sim_file=hp_hp_resnik_sim_file,
         mapping_file=mp_hp_mapping_file,
-        outpath=os.path.join(output_dir, "mp_hp_phenodigm_semsim.txt")
+        outpath=os.path.join(output_dir, "mp_hp_phenodigm_semsim.txt"),
+        prefixa="HP",
+        prefixb="MP",
     )
     print(f"Wrote to {outpath}.")
 

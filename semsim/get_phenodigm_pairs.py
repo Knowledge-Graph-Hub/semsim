@@ -12,6 +12,8 @@ def make_phenodigm(
     same_resnik_sim_file: str,
     mapping_file: str,
     outpath: str,
+    prefixa: str,
+    prefixb: str,
 ) -> str:
     """Produce a phenodigm file.
 
@@ -27,11 +29,10 @@ def make_phenodigm(
     :param mapping_file: file containing all equivalent
         cross-phenotype pairs
     :param outpath: where to write out file
+    :param prefixa: prefix of first ontology, e.g. 'HP'
+    :param prefixb: prefix of second ontology, e.g. 'MP'
     :return: str, path to output
     """
-
-    prefixa = "HP"
-    prefixb = "MP"
 
     # Check for existence of all input files first
     # and load them if they're present
