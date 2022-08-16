@@ -65,6 +65,9 @@ def make_phenodigm(
         f"Finding {prefixa} term matches based on Resnik scores, "
         f"cutoff {cutoff}..."
     )
+
+    # TODO: ignore duplicates when appending to match_data
+
     for term in tqdm(set(filtermap_df[prefixa + "_id"])):
         rmatches = resnik_df.loc[(resnik_df[prefixa] == term)]
         jmatches = jaccard_df.loc[(jaccard_df[prefixa] == term)]
