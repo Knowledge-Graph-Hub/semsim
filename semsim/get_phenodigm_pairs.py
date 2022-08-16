@@ -66,16 +66,28 @@ def make_phenodigm(
         f"cutoff {cutoff}..."
     )
     for term in tqdm(set(filtermap_df[prefixa + "_id"])):
-        matches = resnik_df.loc[(resnik_df[prefixa] == term)]
-        for match in matches.iloc[0:1, 1:]:
+        rmatches = resnik_df.loc[(resnik_df[prefixa] == term)]
+        jmatches = jaccard_df.loc[(jaccard_df[prefixa] == term)]
+        for match in rmatches.iloc[0:1, 1:]:
             try:
-                if float(matches[match].values[0]) > cutoff:
-                    match_data.append([term, match, matches[match].values[0]])
+                if float(rmatches[match].values[0]) > cutoff:
+                    match_data.append(
+                        [
+                            term,
+                            match,
+                            jmatches[match].values[0],
+                            rmatches[match].values[0],
+                        ]
+                    )
             except (TypeError, IndexError):
                 error_data.append(term)  # Some terms may not have scores
 
-    # Include MP term, Jaccard score, subsumer term
-    full_df = pd.DataFrame(match_data, columns=[prefixa, prefixb, "resnik"])
+    # Jaccard score and Resnik score
+    full_df = pd.DataFrame(
+        match_data, columns=[prefixa, prefixb, "jaccard", "resnik"]
+    )
+
+    # Include MP term
     full_df = pd.merge(
         left=full_df,
         right=filtermap_df,
@@ -83,6 +95,10 @@ def make_phenodigm(
         left_on=prefixb,
         right_on=prefixa + "_id",
     )
+
+    # TODO: Include subsumer term
+
+    # Clean up the df before writing
     full_df.drop(columns=[prefixb, prefixa + "_id"], inplace=True)
     full_df.rename({prefixb + "_id": prefixb}, axis=1, inplace=True)
 
