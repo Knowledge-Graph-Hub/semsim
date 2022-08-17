@@ -66,22 +66,22 @@ def make_phenodigm(
         f"cutoff {cutoff}..."
     )
 
-    # TODO: ignore duplicates when appending to match_data
-
     for term in tqdm(set(filtermap_df[prefixa + "_id"])):
         rmatches = resnik_df.loc[(resnik_df[prefixa] == term)]
         jmatches = jaccard_df.loc[(jaccard_df[prefixa] == term)]
         for match in rmatches.iloc[0:1, 1:]:
             try:
-                if float(rmatches[match].values[0]) > float(cutoff):
-                    match_data.append(
-                        [
-                            term,
-                            match,
-                            jmatches[match].values[0],
-                            rmatches[match].values[0],
-                        ]
-                    )
+                matchlist = [
+                    term,
+                    match,
+                    jmatches[match].values[0],
+                    rmatches[match].values[0],
+                ]
+                if (
+                    float(rmatches[match].values[0]) > float(cutoff)
+                    and matchlist not in match_data
+                ):
+                    match_data.append(matchlist)
             except (TypeError, IndexError):
                 error_data.append(term)  # Some terms may not have scores
 
@@ -107,9 +107,9 @@ def make_phenodigm(
     full_df.rename({prefixb + "_id": prefixb}, axis=1, inplace=True)
     full_df.insert(1, prefixb, full_df.pop(prefixb))
     for col in [prefixa, prefixb]:
-        full_df[col] = full_df[col].str.replace(':', '_')
+        full_df[col] = full_df[col].str.replace(":", "_")
 
-    full_df.to_csv(outpath, index=False, header=False, sep='\t')
+    full_df.to_csv(outpath, index=False, header=False, sep="\t")
 
     if len(error_data) > 0:
         print("The following terms had errors:")
