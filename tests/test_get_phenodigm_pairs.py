@@ -15,8 +15,8 @@ class TestGetPhenodigmPairs(TestCase):
     def setUp(self) -> None:
         """Set up."""
         self.cutoff = 2
-        self.test_jaccard_sim_file = "tests/resources/test_jaccard_out"
-        self.test_resnik_sim_file = "tests/resources/test_resnik_out"
+        self.test_jaccard_sim_file = "tests/resources/test_jaccard"
+        self.test_resnik_sim_file = "tests/resources/test_resnik"
         self.mapping_file = "tests/resources/test_mapping.csv"
         self.outpath = "tests/output/phenodigm_out"
         self.prefixa = "HP"
@@ -43,6 +43,5 @@ class TestGetPhenodigmPairs(TestCase):
         filtermap_df = make_filtered_map(map_df, self.prefixa, self.prefixb)
         col1 = self.prefixa + "_id"
         col2 = self.prefixb + "_id"
-        self.assertTrue(filtermap_df.columns == pd.Index([col1, col2]))
-        self.assertTrue(filtermap_df[col1].str.startswith(self.prefixa))
-        self.assertTrue(filtermap_df[col2].str.startswith(self.prefixb))
+        self.assertTrue(filtermap_df[col1].str.startswith(self.prefixa).all())
+        self.assertTrue(filtermap_df[col2].str.startswith(self.prefixb).all())
