@@ -102,12 +102,14 @@ def make_phenodigm(
     # TODO: Include subsumer term
 
     # Clean up the df before writing
-
+    # Also do some reformatting to match expected
     full_df.drop(columns=[prefixb, prefixa + "_id"], inplace=True)
     full_df.rename({prefixb + "_id": prefixb}, axis=1, inplace=True)
     full_df.insert(1, prefixb, full_df.pop(prefixb))
+    for col in [prefixa, prefixb]:
+        full_df[col] = full_df[col].str.replace(':', '_')
 
-    full_df.to_csv(outpath, index=False, header=False)
+    full_df.to_csv(outpath, index=False, header=False, sep='\t')
 
     if len(error_data) > 0:
         print("The following terms had errors:")
