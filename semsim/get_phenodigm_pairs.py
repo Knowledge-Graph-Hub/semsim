@@ -102,8 +102,10 @@ def make_phenodigm(
     # TODO: Include subsumer term
 
     # Clean up the df before writing
+
     full_df.drop(columns=[prefixb, prefixa + "_id"], inplace=True)
     full_df.rename({prefixb + "_id": prefixb}, axis=1, inplace=True)
+    full_df.insert(1, prefixb, full_df.pop(prefixb))
 
     full_df.to_csv(outpath, index=False, header=False)
 
