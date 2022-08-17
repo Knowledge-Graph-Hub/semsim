@@ -14,7 +14,7 @@ class TestGetPhenodigmPairs(TestCase):
 
     def setUp(self) -> None:
         """Set up."""
-        self.cutoff = 2
+        self.cutoff = "2"
         self.test_jaccard_sim_file = "tests/resources/test_jaccard"
         self.test_resnik_sim_file = "tests/resources/test_resnik"
         self.mapping_file = "tests/resources/test_mapping.csv"

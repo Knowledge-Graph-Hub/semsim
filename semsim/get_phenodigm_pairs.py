@@ -73,7 +73,7 @@ def make_phenodigm(
         jmatches = jaccard_df.loc[(jaccard_df[prefixa] == term)]
         for match in rmatches.iloc[0:1, 1:]:
             try:
-                if float(rmatches[match].values[0]) > cutoff:
+                if float(rmatches[match].values[0]) > float(cutoff):
                     match_data.append(
                         [
                             term,
