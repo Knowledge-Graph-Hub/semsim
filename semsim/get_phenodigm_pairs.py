@@ -17,7 +17,9 @@ def make_phenodigm(
 ) -> str:
     """Produce a phenodigm file.
 
-    This is generally a MP-HP comparison.
+    This is a cross-ontology comparison,
+    based on a mapping file containing explicit term
+    equivalencies.
     Output is a path to a file containing the Resnik and Jaccard
     similarity for pairs of phenotypes that meet some minimal
     level of Resnik similarity (default: 2.5).

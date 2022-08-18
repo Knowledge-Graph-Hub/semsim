@@ -52,59 +52,47 @@ def run(ontology: str, annot_col: str, output_dir: str) -> None:
 @main.command()
 @click.option("--output_dir", "-o", required=False, default="data")
 @click.option(
-    "--mp_hp_mapping_file",
+    "--mapping",
     "-m",
     required=True,
     default="data/upheno_mapping_all.csv",
 )
 @click.option(
-    "--hp_hp_resnik_sim_file", "-h", required=True, default="data/HP_resnik"
+    "--resnik_sim_file", "-h", required=True, default="data/HP_resnik"
 )
 @click.option(
-    "--hp_hp_jaccard_sim_file", "-h", required=True, default="data/HP_jaccard"
+    "--jaccard_sim_file", "-h", required=True, default="data/HP_jaccard"
 )
 @click.option("--cutoff", "-c", required=True, default=2.5)
-def mp_hp(
+def make_phenodigm(
     cutoff: str,
-    hp_hp_jaccard_sim_file: str,
-    hp_hp_resnik_sim_file: str,
-    mp_hp_mapping_file: str,
+    jaccard_sim_file: str,
+    resnik_sim_file: str,
+    mapping: str,
     output_dir: str,
 ) -> None:
-    """Produce an MP-HP phenodigm file.
+    """Produce phenodigm-style similarity input file.
 
     That is, a file containing the Resnik and Jaccard similarity
-    for pairs of MP-HP phenotypes that meet some minimal level of
+    for pairs of terms that meet some minimal level of
     Resnik similarity (default: 2.5).
 
-    :param cutoff: cutoff HP-HP resnik similarity in order to keep a row
-    :param hp_hp_jaccard_sim_file: all pairwse HP-HP Jaccard scores
+    :param cutoff: cutoff Resnik similarity in order to keep a row
+    :param jaccard_sim_file: all pairwise Jaccard scores
         (produced from run command)
-    :param hp_hp_resnik_sim_file: all pairwise HP-HP Resnik scores
+    :param resnik_sim_file: all pairwise Resnik scores
         (produced from run commnad)
-    :param mp_hp_mapping_file: file containing all equivalent MP-HP phenotypes
+    :param mapping: file containing all equivalent terms
     :param output_dir: where to write out file
     :return: None
     """
-    # read HP-HP Jaccard sim data into pd dataframe
-    # read HP-HP Resnik sim data into pd dataframe
-    # read in mp_hp_mapping_file mapping file
-    # foreach pair P of equivalent MP-HP terms
-    #    select row R for HP term in Resnik
-    #    select HP column names HPC in row R for cols in which value > cutoff
-    #    for each HPC:
-    #        write 1 row in output file for HP term, MP term, Resnik, Jaccard, subsuming HP term # noqa
-
-    # We should recreate this phenodigm file format:
-    # HP_3000028      MP_0006153      0.2647058823529412      2.5123772659440853      HP_0000271; # noqa
-    # HP_3000028      MP_0006152      0.25    2.5123772659440853      HP_0000271; # noqa
 
     outpath = make_phenodigm(
         cutoff=cutoff,
-        same_jaccard_sim_file=hp_hp_jaccard_sim_file,
-        same_resnik_sim_file=hp_hp_resnik_sim_file,
-        mapping_file=mp_hp_mapping_file,
-        outpath=os.path.join(output_dir, "mp_hp_phenodigm_semsim.txt"),
+        same_jaccard_sim_file=jaccard_sim_file,
+        same_resnik_sim_file=resnik_sim_file,
+        mapping_file=mapping,
+        outpath=os.path.join(output_dir, "phenodigm_semsim.txt"),
         prefixa="HP",
         prefixb="MP",
     )
