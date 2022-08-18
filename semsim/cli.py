@@ -17,7 +17,7 @@ def main():
 @click.option("--output_dir", "-o", required=False, default="data")
 @click.option("--annot_col", "-c", required=False, default="HPO_ID")
 @click.argument("ontology", default="HP")
-def run(ontology: str, annot_col: str, output_dir: str) -> None:
+def sim(ontology: str, annot_col: str, output_dir: str) -> None:
     """Generate a file containing the semantic similarity.
 
     (Resnik and Jaccard) for each pair of terms in an ontology
@@ -64,7 +64,7 @@ def run(ontology: str, annot_col: str, output_dir: str) -> None:
     "--jaccard_sim_file", "-h", required=True, default="data/HP_jaccard"
 )
 @click.option("--cutoff", "-c", required=True, default=2.5)
-def make_phenodigm(
+def phenodigm(
     cutoff: str,
     jaccard_sim_file: str,
     resnik_sim_file: str,
@@ -79,9 +79,9 @@ def make_phenodigm(
 
     :param cutoff: cutoff Resnik similarity in order to keep a row
     :param jaccard_sim_file: all pairwise Jaccard scores
-        (produced from run command)
+        (produced from sim command)
     :param resnik_sim_file: all pairwise Resnik scores
-        (produced from run commnad)
+        (produced from sim commnad)
     :param mapping: file containing all equivalent terms
     :param output_dir: where to write out file
     :return: None
