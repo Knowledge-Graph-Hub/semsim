@@ -15,23 +15,33 @@ def main():
 
 @main.command()
 @click.option("--output_dir", "-o", required=False, default="data")
-@click.option("--annot_col", "-c", required=False, default="HPO_ID")
-@click.argument("ontology", default="HP")
-def sim(ontology: str, annot_col: str, output_dir: str) -> None:
+@click.option("--annot_file", "-a", required=False, default=None)
+@click.option("--annot_col", "-c", required=False)
+@click.argument("ontology", default=None)
+def sim(
+    ontology: str, annot_file: str, annot_col: str, output_dir: str
+) -> None:
     """Generate a file containing the semantic similarity.
 
     (Resnik and Jaccard) for each pair of terms in an ontology
-    (by default, ontology is HP).
 
-    :param ontology: An OBO Foundry ontology on which to compute sem sim [HP]
+    :param ontology: An OBO Foundry ontology on which to compute sem sim
+    (e.g., HP)
     :param output_dir: Path to write file of all by all sem sim measurements
+    :param annot_file: path to an annotation file, if using specific
+    frequencies for Resnik calculation
     :param annot_col: name of column in annotation file containing onto IDs
     :return: None
     """
-    print(f"ontology is {ontology}")
+    print(f"Input ontology is {ontology}")
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
+
+    if (annot_file and not annot_col) or (annot_col and not annot_file):
+        raise ValueError(
+            "Need both annot_file and annot_col if using specific freq values."
+        )
 
     # get ontology, make into DAG
     # make counts (Dict[curie, count])
@@ -39,6 +49,7 @@ def sim(ontology: str, annot_col: str, output_dir: str) -> None:
     # write out
     outpaths = get_similarities(
         ontology=ontology,
+        annot_file=annot_file,
         annot_col=annot_col,
         resnik_path=os.path.join(output_dir, f"{ontology}_resnik"),
         ancestors_jaccard_path=os.path.join(output_dir, f"{ontology}_jaccard"),

@@ -4,16 +4,16 @@ from collections import Counter
 import pandas as pd
 
 from .compute_pairwise_similarities import (  # noqa
-    compute_pairwise_ancestors_jaccard, compute_pairwise_resnik)
+    compute_pairwise_ancestors_jaccard,
+    compute_pairwise_resnik,
+)
 
 GRAPE_DATA_MOD = "grape.datasets.kgobo"
-ANNOTATION_SOURCES = {
-    "HP": "http://purl.obolibrary.org/obo/hp/hpoa/phenotype.hpoa"
-}
 
 
 def get_similarities(
     ontology: str,
+    annot_file: str,
     annot_col: str,
     resnik_path: str,
     ancestors_jaccard_path: str,
@@ -23,7 +23,7 @@ def get_similarities(
     :param ontology: str, name of ontology to retrieve and process.
     :param resnik_path: str, where to store the resnik pairwise similarities.
     :param ancestors_jaccard_path: str, where to store the Ancestors Jaccard
-        pairwise similarities.
+    pairwise similarities.
     """
     ontology = ontology.upper()
     onto_graph_class = import_grape_class(ontology)
@@ -38,15 +38,16 @@ def get_similarities(
         .remove_disconnected_nodes()
     )
 
-    counts = dict(
-        Counter(
-            pd.read_csv(
-                ANNOTATION_SOURCES[ontology],
-                sep="\t",
-                skiprows=4,
-            ).annot_col
+    if annot_file:
+        counts = dict(
+            Counter(
+                pd.read_csv(
+                    annot_file,
+                    sep="\t",
+                    skiprows=4,
+                ).annot_col
+            )
         )
-    )
 
     compute_pairwise_ancestors_jaccard(
         dag=onto_graph, path=ancestors_jaccard_path
