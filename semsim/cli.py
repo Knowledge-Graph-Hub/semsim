@@ -86,7 +86,6 @@ def phenodigm(
     :param output_dir: where to write out file
     :return: None
     """
-
     outpath = make_phenodigm(
         cutoff=cutoff,
         same_jaccard_sim_file=jaccard_sim_file,
