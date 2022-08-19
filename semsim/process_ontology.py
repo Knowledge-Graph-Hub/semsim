@@ -1,10 +1,11 @@
 """Process ontology and retrieve pairwise similarities."""
+import warnings
 from collections import Counter
 
 import pandas as pd
 
 from .compute_pairwise_similarities import (  # noqa
-    compute_pairwise_ancestors_jaccard, compute_pairwise_resnik)
+    compute_pairwise_ancestors_jaccard, compute_pairwise_resnik,)
 
 GRAPE_DATA_MOD = "grape.datasets.kgobo"
 
@@ -42,6 +43,17 @@ def get_similarities(
 
     if not onto_graph.is_directed_acyclic():
         raise ValueError("Input graph does not appear to be a DAG.")
+
+    try:
+        onto_graph.must_be_connected()
+    except ValueError:
+        comps = onto_graph.get_number_of_connected_components()
+        num_comps = comps[0]
+        max_comp = comps[2]
+        warnings.warn("Graph is not fully connected. Will ignore"
+                      " all but the largest component."
+                      f" {num_comps} components are present."
+                      f" Largest component has {max_comp} nodes.")
 
     if annot_file:
         counts = dict(
