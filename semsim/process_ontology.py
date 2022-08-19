@@ -41,6 +41,9 @@ def get_similarities(
         .remove_disconnected_nodes()
     )
 
+    if not onto_graph.is_directed_acyclic():
+        raise ValueError("Input graph does not appear to be a DAG.")
+
     if annot_file:
         counts = dict(
             Counter(
@@ -51,6 +54,12 @@ def get_similarities(
                 ).annot_col
             )
         )
+    else:
+
+        # TODO: get actual counts, not all equivalent values
+
+        counts = dict(zip(onto_graph.get_node_names(),
+                          [1] * len(onto_graph.get_node_names())))
 
     compute_pairwise_ancestors_jaccard(
         dag=onto_graph, path=ancestors_jaccard_path
