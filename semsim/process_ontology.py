@@ -15,6 +15,7 @@ def get_similarities(
     annot_col: str,
     resnik_path: str,
     ancestors_jaccard_path: str,
+    prefixes: list,
 ):
     """Compute and store similarities to the provided paths.
 
@@ -22,15 +23,19 @@ def get_similarities(
     :param resnik_path: str, where to store the resnik pairwise similarities.
     :param ancestors_jaccard_path: str, where to store the Ancestors Jaccard
     pairwise similarities.
+    :param prefixes: list of prefixes, without colons, to keep the
+    corresponding nodes for
     """
     ontology = ontology.upper()
     onto_graph_class = import_grape_class(ontology)
+
+    keep_prefixes = [f"{prefix}:" for prefix in prefixes]
 
     onto_graph = (
         onto_graph_class(directed=True)
         .filter_from_names(
             edge_type_names_to_keep=["biolink:subclass_of"],
-            node_prefixes_to_keep=[f"{ontology}:"],
+            node_prefixes_to_keep=keep_prefixes,
         )
         .to_transposed()
         .remove_disconnected_nodes()

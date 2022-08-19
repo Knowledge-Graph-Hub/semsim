@@ -17,9 +17,16 @@ def main():
 @click.option("--output_dir", "-o", required=False, default="data")
 @click.option("--annot_file", "-a", required=False, default=None)
 @click.option("--annot_col", "-c", required=False)
+@click.option("--prefixes", "-p",
+              callback=lambda _, __, x: x.split(',') if x else [],
+              required=True)
 @click.argument("ontology", default=None)
 def sim(
-    ontology: str, annot_file: str, annot_col: str, output_dir: str
+    ontology: str,
+    annot_file: str,
+    annot_col: str,
+    output_dir: str,
+    prefixes: list,
 ) -> None:
     """Generate a file containing the semantic similarity.
 
@@ -31,6 +38,8 @@ def sim(
     :param annot_file: path to an annotation file, if using specific
     frequencies for Resnik calculation
     :param annot_col: name of column in annotation file containing onto IDs
+    :param prefixes: One or more node types to select based on prefix,
+    comma-delimited, e.g., HP,MP,UPHENO
     :return: None
     """
     print(f"Input ontology is {ontology}")
@@ -53,6 +62,7 @@ def sim(
         annot_col=annot_col,
         resnik_path=os.path.join(output_dir, f"{ontology}_resnik"),
         ancestors_jaccard_path=os.path.join(output_dir, f"{ontology}_jaccard"),
+        prefixes=prefixes,
     )
 
     print(outpaths)
