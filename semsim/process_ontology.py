@@ -26,7 +26,6 @@ def get_similarities(
     :param prefixes: list of prefixes, without colons, to keep the
     corresponding nodes for
     """
-
     onto_graph_class = import_grape_class(ontology)
 
     keep_prefixes = [f"{prefix}:" for prefix in prefixes]
