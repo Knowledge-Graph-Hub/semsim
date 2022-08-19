@@ -26,7 +26,7 @@ def get_similarities(
     :param prefixes: list of prefixes, without colons, to keep the
     corresponding nodes for
     """
-    ontology = ontology.upper()
+
     onto_graph_class = import_grape_class(ontology)
 
     keep_prefixes = [f"{prefix}:" for prefix in prefixes]
@@ -62,9 +62,15 @@ def get_similarities(
 def import_grape_class(name) -> object:
     """Dynamically import a Grape class based on its reference.
 
+    It's assumed to be part of KG-OBO, but if not, it will
+    look in KG-Hub instead.
     :param reference: The reference or path for the class to be imported.
     :return: The imported class
     """
     mod = __import__(GRAPE_DATA_MOD, fromlist=[name])
-    this_class = getattr(mod, name)
+    try:
+        this_class = getattr(mod, name)
+    except AttributeError:
+        mod = __import__("grape.datasets.kghub", fromlist=[name])
+        this_class = getattr(mod, name)
     return this_class
