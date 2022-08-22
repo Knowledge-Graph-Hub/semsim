@@ -23,6 +23,7 @@ def compute_pairwise_resnik(
     return: str
         The path where file was written
     """
+    print("Calculating pairwise Resnik scores...")
     model = DAGResnik()
     model.fit(dag, node_counts=counts)
     model.get_pairwise_similarities(
@@ -43,6 +44,7 @@ def compute_pairwise_ancestors_jaccard(dag: Graph, path: str) -> str:
     return: str
         The path where file was written
     """
+    print("Calculating pairwise Jaccard scores...")
     pd.DataFrame(
         dag.get_shared_ancestors_jaccard_adjacency_matrix(
             dag.get_breadth_first_search_from_node_names(
