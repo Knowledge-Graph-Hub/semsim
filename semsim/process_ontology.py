@@ -73,11 +73,19 @@ def get_similarities(
         counts = dict(zip(onto_graph.get_node_names(),
                           [1] * len(onto_graph.get_node_names())))
 
-    compute_pairwise_ancestors_jaccard(
-        dag=onto_graph, path=ancestors_jaccard_path
+    # print(onto_graph.get_node_name_from_node_id(36968))
+    # print(onto_graph.get_node_name_from_node_id(2))
+
+    compute_pairwise_resnik(
+        dag=onto_graph,
+        counts=counts,
+        path=resnik_path
     )
 
-    compute_pairwise_resnik(dag=onto_graph, counts=counts, path=resnik_path)
+    compute_pairwise_ancestors_jaccard(
+        dag=onto_graph,
+        path=ancestors_jaccard_path
+    )
 
 
 def import_grape_class(name) -> object:
