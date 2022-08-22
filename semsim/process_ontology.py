@@ -54,6 +54,7 @@ def get_similarities(
                       " all but the largest component."
                       f" {num_comps} components are present."
                       f" Largest component has {max_comp} nodes.")
+        onto_graph = onto_graph.remove_components(top_k_components=1)
 
     if annot_file:
         counts = dict(
@@ -67,7 +68,7 @@ def get_similarities(
         )
     else:
 
-        # TODO: get actual counts, not all equivalent values
+        # TODO: get more specific counts, not all equivalent values
 
         counts = dict(zip(onto_graph.get_node_names(),
                           [1] * len(onto_graph.get_node_names())))
