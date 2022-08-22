@@ -28,7 +28,6 @@ def get_similarities(
     corresponding nodes for
     :return: True if successful
     """
-
     success = True
 
     onto_graph_class = import_grape_class(ontology)
