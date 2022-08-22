@@ -56,16 +56,17 @@ def sim(
     # make counts (Dict[curie, count])
     # call compute pairwise similarity
     # write out
-    outpaths = get_similarities(
+    if get_similarities(
         ontology=ontology,
         annot_file=annot_file,
         annot_col=annot_col,
         resnik_path=os.path.join(output_dir, f"{ontology}_resnik"),
         ancestors_jaccard_path=os.path.join(output_dir, f"{ontology}_jaccard"),
         prefixes=prefixes,
-    )
-
-    print(outpaths)
+    ):
+        print(f"Wrote to {output_dir}.")
+    else:
+        print(f"Semantic similarity calculation failed for {ontology}.")
 
     return None
 

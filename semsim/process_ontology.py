@@ -17,7 +17,7 @@ def get_similarities(
     resnik_path: str,
     ancestors_jaccard_path: str,
     prefixes: list,
-):
+) -> bool:
     """Compute and store similarities to the provided paths.
 
     :param ontology: str, name of ontology to retrieve and process.
@@ -26,7 +26,11 @@ def get_similarities(
     pairwise similarities.
     :param prefixes: list of prefixes, without colons, to keep the
     corresponding nodes for
+    :return: True if successful
     """
+
+    success = True
+
     onto_graph_class = import_grape_class(ontology)
 
     keep_prefixes = [f"{prefix}:" for prefix in prefixes]
@@ -73,8 +77,7 @@ def get_similarities(
         counts = dict(zip(onto_graph.get_node_names(),
                           [1] * len(onto_graph.get_node_names())))
 
-    # print(onto_graph.get_node_name_from_node_id(36968))
-    # print(onto_graph.get_node_name_from_node_id(2))
+    print(onto_graph.get_node_name_from_node_id(2))
 
     compute_pairwise_resnik(
         dag=onto_graph,
@@ -86,6 +89,8 @@ def get_similarities(
         dag=onto_graph,
         path=ancestors_jaccard_path
     )
+
+    return success
 
 
 def import_grape_class(name) -> object:
