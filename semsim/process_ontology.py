@@ -4,26 +4,23 @@ from collections import Counter
 
 import pandas as pd
 
-from .compute_pairwise_similarities import (  # noqa
-    compute_pairwise_ancestors_jaccard, compute_pairwise_resnik)
+from .compute_pairwise_similarities import compute_pairwise_sims
 
 GRAPE_DATA_MOD = "grape.datasets.kgobo"
 
 
 def get_similarities(
     ontology: str,
+    cutoff: float,
     annot_file: str,
     annot_col: str,
-    resnik_path: str,
-    ancestors_jaccard_path: str,
+    output_dir: str,
     prefixes: list,
 ) -> bool:
     """Compute and store similarities to the provided paths.
 
     :param ontology: str, name of ontology to retrieve and process.
-    :param resnik_path: str, where to store the resnik pairwise similarities.
-    :param ancestors_jaccard_path: str, where to store the Ancestors Jaccard
-    pairwise similarities.
+    :param output_dir: str, where to store the pairwise similarities.
     :param prefixes: list of prefixes, without colons, to keep the
     corresponding nodes for
     :return: True if successful
@@ -32,20 +29,15 @@ def get_similarities(
 
     onto_graph_class = import_grape_class(ontology)
 
-    keep_prefixes = [f"{prefix}:" for prefix in prefixes]
+    focus_prefixes = [f"{prefix}:" for prefix in prefixes]
 
-    onto_graph = (
-        onto_graph_class(directed=True)
-        .filter_from_names(
-            edge_type_names_to_keep=["biolink:subclass_of"],
-            node_prefixes_to_keep=keep_prefixes,
-        )
-        .to_transposed()
-        .remove_disconnected_nodes()
-    )
+    onto_graph = (onto_graph_class(directed=True).remove_disconnected_nodes())
 
     if not onto_graph.is_directed_acyclic():
-        raise ValueError("Input graph does not appear to be a DAG.")
+        # Try transposing the graph first.
+        onto_graph = onto_graph.to_transposed()
+        if not onto_graph.is_directed_acyclic():
+            raise ValueError("Input graph does not appear to be a DAG.")
 
     try:
         onto_graph.must_be_connected()
@@ -76,17 +68,12 @@ def get_similarities(
         counts = dict(zip(onto_graph.get_node_names(),
                           [1] * len(onto_graph.get_node_names())))
 
-    print(onto_graph.get_node_name_from_node_id(2))
-
-    compute_pairwise_resnik(
+    compute_pairwise_sims(
         dag=onto_graph,
         counts=counts,
-        path=resnik_path
-    )
-
-    compute_pairwise_ancestors_jaccard(
-        dag=onto_graph,
-        path=ancestors_jaccard_path
+        cutoff=cutoff,
+        prefixes=focus_prefixes,
+        path=output_dir
     )
 
     return success

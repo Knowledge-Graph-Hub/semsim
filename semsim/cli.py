@@ -14,6 +14,7 @@ def main():
 
 
 @main.command()
+@click.option("--cutoff", "-c", required=True, default=2.5)
 @click.option("--output_dir", "-o", required=False, default="data")
 @click.option("--annot_file", "-a", required=False, default=None)
 @click.option("--annot_col", "-c", required=False)
@@ -23,6 +24,7 @@ def main():
 @click.argument("ontology", default=None)
 def sim(
     ontology: str,
+    cutoff: str,
     annot_file: str,
     annot_col: str,
     output_dir: str,
@@ -34,6 +36,7 @@ def sim(
 
     :param ontology: An OBO Foundry ontology on which to compute sem sim
     (e.g., HP)
+    :param cutoff: cutoff Resnik similarity in order to keep a row
     :param output_dir: Path to write file of all by all sem sim measurements
     :param annot_file: path to an annotation file, if using specific
     frequencies for Resnik calculation
@@ -52,16 +55,18 @@ def sim(
             "Need both annot_file and annot_col if using specific freq values."
         )
 
+    cutoff = float(cutoff)
+
     # get ontology, make into DAG
     # make counts (Dict[curie, count])
     # call compute pairwise similarity
     # write out
     if get_similarities(
         ontology=ontology,
+        cutoff=cutoff,
         annot_file=annot_file,
         annot_col=annot_col,
-        resnik_path=os.path.join(output_dir, f"{ontology}_resnik"),
-        ancestors_jaccard_path=os.path.join(output_dir, f"{ontology}_jaccard"),
+        output_dir=output_dir,
         prefixes=prefixes,
     ):
         print(f"Wrote to {output_dir}.")
