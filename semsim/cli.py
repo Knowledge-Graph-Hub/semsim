@@ -80,18 +80,22 @@ def sim(
     default="data/upheno_mapping_all.csv",
 )
 @click.option(
-    "--resnik_sim_file", "-h", required=True, default="data/HP_resnik"
+    "--resnik_sim_file", "-r", required=True
 )
 @click.option(
-    "--jaccard_sim_file", "-h", required=True, default="data/HP_jaccard"
+    "--jaccard_sim_file", "-j", required=True
 )
 @click.option("--cutoff", "-c", required=True, default=2.5)
+@click.option("--prefixes", "-p",
+              callback=lambda _, __, x: x.split(',') if x else [],
+              required=True)
 def phenodigm(
     cutoff: str,
     jaccard_sim_file: str,
     resnik_sim_file: str,
     mapping: str,
     output_dir: str,
+    prefixes: list
 ) -> None:
     """Produce phenodigm-style similarity input file.
 
@@ -108,14 +112,21 @@ def phenodigm(
     :param output_dir: where to write out file
     :return: None
     """
+
+    if len(prefixes) > 2 or len(prefixes) < 2:
+        raise ValueError("Only pairs of prefixes are supported.")
+    else:
+        prefixa = prefixes[0]
+        prefixb = prefixes[1]
+
     outpath = make_phenodigm(
         cutoff=cutoff,
         same_jaccard_sim_file=jaccard_sim_file,
         same_resnik_sim_file=resnik_sim_file,
         mapping_file=mapping,
         outpath=os.path.join(output_dir, "phenodigm_semsim.txt"),
-        prefixa="HP",
-        prefixb="MP",
+        prefixa=prefixa,
+        prefixb=prefixb,
     )
     print(f"Wrote to {outpath}.")
 
