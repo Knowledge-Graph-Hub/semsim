@@ -15,7 +15,7 @@ def compute_pairwise_sims(
     cutoff: float,
     prefixes: list,
     path: str,
-) -> str:
+) -> list:
     """Compute and store pairwise Resnik and Jaccard similarities.
 
     Parameters
@@ -38,7 +38,7 @@ def compute_pairwise_sims(
 
     resnik_model = DAGResnik()
     resnik_model.fit(dag, node_counts=counts)
-    rs_hits = {}
+    rs_hits = {}  # type: ignore
     # js_hits = {}
 
     dag_name = dag.get_name()
