@@ -72,8 +72,10 @@ def compute_pairwise_sims(
                     # and save to js_hits
 
             except ValueError as e:
-                pass
-                #print(e)
+                node_i_name = dag.get_node_name_from_node_id(node_i)
+                node_j_name = dag.get_node_name_from_node_id(node_j)
+                print(e)
+                print(f"Offending nodes: {node_i_name} and {node_j_name}")
 
     rs_hits.to_csv(rs_path, index=True, header=True)
     js_hits.to_csv(js_path, index=True, header=True)
