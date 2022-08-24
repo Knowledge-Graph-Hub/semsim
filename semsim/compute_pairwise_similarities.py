@@ -6,6 +6,7 @@ from typing import Dict
 import pandas as pd
 from grape import Graph
 from grape.similarities import DAGResnik
+from tqdm import tqdm
 
 
 def compute_pairwise_sims(
@@ -54,7 +55,7 @@ def compute_pairwise_sims(
     nodes_of_interest_i = dag.get_node_ids_from_node_names(nodes_of_interest)
     nodes_of_interest_j = dag.get_node_ids_from_node_names(nodes_of_interest)
 
-    for node_i in nodes_of_interest_i:
+    for node_i in tqdm(nodes_of_interest_i):
         for node_j in nodes_of_interest_j:
             try:
                 # call pairwise Resnik on r = A, B
@@ -71,7 +72,8 @@ def compute_pairwise_sims(
                     # and save to js_hits
 
             except ValueError as e:
-                print(e)
+                pass
+                #print(e)
 
     rs_hits.to_csv(rs_path, index=True, header=True)
     js_hits.to_csv(js_path, index=True, header=True)
