@@ -33,10 +33,28 @@ def get_similarities(
 
     focus_prefixes = [prefix for prefix in prefixes]
 
+    # Some prefixes are helpful for traversing the graph,
+    # but don't need to be included in the final simlarities.
+    # TODO: only show these if they're present in the graph
+    extra_prefixes = ["BFO", "owl", "PATO"]
+    traversal_prefixes = [f"{prefix}:" for prefix in prefixes]
+    for prefix in extra_prefixes:
+        traversal_prefixes.append(f"{prefix}:")
+
+    print(f"Comparing nodes with these prefixes: {' '.join(focus_prefixes)}")
+    print(
+        "Also traversing nodes with these prefixes: "
+        f"{' '.join(extra_prefixes)}"
+    )
+
     onto_graph = (
         onto_graph_class(directed=True)
-        .filter_from_names(edge_type_names_to_keep=[predicate])
+        .filter_from_names(
+            edge_type_names_to_keep=[predicate],
+            node_prefixes_to_keep=traversal_prefixes,
+        )
         .remove_disconnected_nodes()
+        .to_transposed()
     )
 
     try:
@@ -56,16 +74,11 @@ def get_similarities(
     if not onto_graph.is_directed_acyclic():
         warnings.warn("Graph is not directed acyclic.")
         if onto_graph.has_selfloops():
-            sys.exit("Self loops are present."
-                     " Cannot complete similarity measurement."
-                     " Exiting...")
-        # Try transposing the graph first.
-        print("Will transpose and check again.")
-        onto_graph = onto_graph.to_transposed()
-        if not onto_graph.is_directed_acyclic():
-            sys.exit("Transposed graph still not a DAG."
-                     " Cannot complete similarity measurement."
-                     " Exiting...")
+            sys.exit(
+                "Self loops are present."
+                " Cannot complete similarity measurement."
+                " Exiting..."
+            )
 
     if annot_file:
         counts = dict(

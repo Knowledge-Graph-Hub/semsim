@@ -44,8 +44,8 @@ def sim(
     :param annot_file: path to an annotation file, if using specific
     frequencies for Resnik calculation
     :param annot_col: name of column in annotation file containing onto IDs
-    :param prefixes: One or more node types to select based on prefix,
-    comma-delimited, e.g., HP,MP,UPHENO
+    :param prefixes: One or more node types to calculate
+    similarity scores for, comma-delimited, e.g., HP,MP,UPHENO
     :param predicate: A predicate type to filter on.
     Defaults to biolink:subclass_of.
     :return: None

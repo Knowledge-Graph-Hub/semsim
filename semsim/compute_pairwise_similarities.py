@@ -39,7 +39,7 @@ def compute_pairwise_sims(
     resnik_model = DAGResnik()
     resnik_model.fit(dag, node_counts=counts)
     rs_hits = {}
-    js_hits = {}
+    # js_hits = {}
 
     dag_name = dag.get_name()
     outpath = pathlib.Path.cwd() / path
@@ -77,8 +77,13 @@ def compute_pairwise_sims(
                 print(e)
                 print(f"Offending nodes: {node_i_name} and {node_j_name}")
 
-    rs_hits.to_csv(rs_path, index=True, header=True)
-    js_hits.to_csv(js_path, index=True, header=True)
+    with rs_path.open('w') as outfile:
+        header = '\t'.join(rs_hits.keys())
+        outfile.write(" \t" + header + "\n")
+        for node in rs_hits:
+            oneline = '\t'.join(rs_hits[node].keys())
+            outfile.write(node + "\t" + oneline + "\n")
+    # with js_path.open('w') as outfile:
 
     return paths
 
