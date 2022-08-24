@@ -39,16 +39,6 @@ def get_similarities(
         .remove_disconnected_nodes()
     )
 
-    if not onto_graph.is_directed_acyclic():
-        # Try transposing the graph first.
-        warnings.warn("Graph is not directed acyclic."
-                      " Will transpose and check again.")
-        onto_graph = onto_graph.to_transposed()
-        if not onto_graph.is_directed_acyclic():
-            sys.exit("Input graph does not appear to be a DAG."
-                     " Cannot complete similarity measurement."
-                     " Exiting...")
-
     try:
         onto_graph.must_be_connected()
     except ValueError:
@@ -62,6 +52,20 @@ def get_similarities(
             f" Largest component has {max_comp} nodes."
         )
         onto_graph = onto_graph.remove_components(top_k_components=1)
+
+    if not onto_graph.is_directed_acyclic():
+        warnings.warn("Graph is not directed acyclic.")
+        if onto_graph.has_selfloops():
+            sys.exit("Self loops are present."
+                     " Cannot complete similarity measurement."
+                     " Exiting...")
+        # Try transposing the graph first.
+        print("Will transpose and check again.")
+        onto_graph = onto_graph.to_transposed()
+        if not onto_graph.is_directed_acyclic():
+            sys.exit("Transposed graph still not a DAG."
+                     " Cannot complete similarity measurement."
+                     " Exiting...")
 
     if annot_file:
         counts = dict(

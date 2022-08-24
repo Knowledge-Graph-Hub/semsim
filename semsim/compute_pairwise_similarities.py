@@ -51,8 +51,8 @@ def compute_pairwise_sims(
         for node in dag.get_node_names()
         if (node.split(":"))[0] in prefixes
     ]
-    nodes_of_interest_i = nodes_of_interest
-    nodes_of_interest_j = nodes_of_interest
+    nodes_of_interest_i = dag.get_node_ids_from_node_names(nodes_of_interest)
+    nodes_of_interest_j = dag.get_node_ids_from_node_names(nodes_of_interest)
 
     for node_i in nodes_of_interest_i:
         for node_j in nodes_of_interest_j:

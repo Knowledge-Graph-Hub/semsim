@@ -50,7 +50,8 @@ def sim(
     Defaults to biolink:subclass_of.
     :return: None
     """
-    print(f"Input ontology is {ontology}")
+    print(f"Input graph is {ontology}.")
+    print(f"Filtering to {predicate}.")
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
