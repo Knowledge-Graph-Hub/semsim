@@ -5,8 +5,7 @@ from unittest import TestCase
 
 from grape import Graph
 
-from semsim.compute_pairwise_similarities import (  # noqa
-    compute_pairwise_ancestors_jaccard, compute_pairwise_resnik)
+from semsim.compute_pairwise_similarities import compute_pairwise_sims
 
 
 class TestComputePairwiseSimilarities(TestCase):
@@ -74,18 +73,13 @@ class TestComputePairwiseSimilarities(TestCase):
                 break
         self.assertTrue(check)
 
-    def test_compute_pairwise_resnik(self) -> None:
-        """Test pairwise Resnik computation."""
-        compute_pairwise_resnik(
+    def test_compute_pairwise_sims(self) -> None:
+        """Test pairwise Resnik and Jaccard computation."""
+        compute_pairwise_sims(
             dag=self.test_graph,
             counts=self.test_counts,
-            path=self.resnik_outpath,
+            cutoff=2.5,
+            prefixes=["HP", "MP"],
+            path="tests/output/",
         )
         self.assertTrue(os.path.exists(self.resnik_outpath))
-
-    def test_compute_pairwise_ancestors_jaccard(self) -> None:
-        """Test pairwise Jaccard computation."""
-        compute_pairwise_ancestors_jaccard(
-            dag=self.test_graph, path=self.jaccard_outpath
-        )
-        self.assertTrue(os.path.exists(self.jaccard_outpath))
