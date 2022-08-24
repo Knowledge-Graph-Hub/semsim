@@ -1,4 +1,5 @@
 """Process ontology and retrieve pairwise similarities."""
+import sys
 import warnings
 from collections import Counter
 
@@ -40,9 +41,13 @@ def get_similarities(
 
     if not onto_graph.is_directed_acyclic():
         # Try transposing the graph first.
+        warnings.warn("Graph is not directed acyclic."
+                      " Will transpose and check again.")
         onto_graph = onto_graph.to_transposed()
         if not onto_graph.is_directed_acyclic():
-            raise ValueError("Input graph does not appear to be a DAG.")
+            sys.exit("Input graph does not appear to be a DAG."
+                     " Cannot complete similarity measurement."
+                     " Exiting...")
 
     try:
         onto_graph.must_be_connected()
