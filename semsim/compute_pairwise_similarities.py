@@ -66,7 +66,7 @@ def compute_pairwise_sims(
                 if rs > cutoff:
                     if node_i not in rs_hits:
                         rs_hits[node_i] = {}
-                    rs_hits[node_i][node_j] = rs
+                    rs_hits[node_i][node_j] = float(rs)
 
                     # TODO: call pairwise Jaccard on r = A, B
                     # and save to js_hits
@@ -77,12 +77,13 @@ def compute_pairwise_sims(
                 print(e)
                 print(f"Offending nodes: {node_i_name} and {node_j_name}")
 
-    with rs_path.open('w') as outfile:
-        header = '\t'.join(rs_hits.keys())
-        outfile.write(" \t" + header + "\n")
-        for node in rs_hits:
-            oneline = '\t'.join(rs_hits[node].keys())
-            outfile.write(node + "\t" + oneline + "\n")
+    rs_df = pd.DataFrame.from_dict(rs_hits)
+    for axis in ['columns', 'index']:
+        rs_df.rename(lambda x: dag.get_node_name_from_node_id(x),
+                     axis=axis,
+                     inplace=True)
+    rs_df.to_csv(rs_path, index=True, header=True)
+
     # with js_path.open('w') as outfile:
 
     return paths
