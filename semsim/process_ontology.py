@@ -16,6 +16,7 @@ def get_similarities(
     annot_col: str,
     output_dir: str,
     prefixes: list,
+    predicate: str,
 ) -> bool:
     """Compute and store similarities to the provided paths.
 
@@ -29,9 +30,13 @@ def get_similarities(
 
     onto_graph_class = import_grape_class(ontology)
 
-    focus_prefixes = [f"{prefix}:" for prefix in prefixes]
+    focus_prefixes = [prefix for prefix in prefixes]
 
-    onto_graph = (onto_graph_class(directed=True).remove_disconnected_nodes())
+    onto_graph = (
+        onto_graph_class(directed=True)
+        .filter_from_names(edge_type_names_to_keep=[predicate])
+        .remove_disconnected_nodes()
+    )
 
     if not onto_graph.is_directed_acyclic():
         # Try transposing the graph first.
@@ -45,10 +50,12 @@ def get_similarities(
         comps = onto_graph.get_number_of_connected_components()
         num_comps = comps[0]
         max_comp = comps[2]
-        warnings.warn("Graph is not fully connected. Will ignore"
-                      " all but the largest component."
-                      f" {num_comps} components are present."
-                      f" Largest component has {max_comp} nodes.")
+        warnings.warn(
+            "Graph is not fully connected. Will ignore"
+            " all but the largest component."
+            f" {num_comps} components are present."
+            f" Largest component has {max_comp} nodes."
+        )
         onto_graph = onto_graph.remove_components(top_k_components=1)
 
     if annot_file:
@@ -65,15 +72,19 @@ def get_similarities(
 
         # TODO: get more specific counts, not all equivalent values
 
-        counts = dict(zip(onto_graph.get_node_names(),
-                          [1] * len(onto_graph.get_node_names())))
+        counts = dict(
+            zip(
+                onto_graph.get_node_names(),
+                [1] * len(onto_graph.get_node_names()),
+            )
+        )
 
     compute_pairwise_sims(
         dag=onto_graph,
         counts=counts,
         cutoff=cutoff,
         prefixes=focus_prefixes,
-        path=output_dir
+        path=output_dir,
     )
 
     return success

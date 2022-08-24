@@ -1,4 +1,6 @@
 """Compute pairwise similarities."""
+
+import pathlib
 from typing import Dict
 
 import pandas as pd
@@ -7,13 +9,13 @@ from grape.similarities import DAGResnik
 
 
 def compute_pairwise_sims(
-    dag: Graph, 
-    counts: Dict[str, int], 
+    dag: Graph,
+    counts: Dict[str, int],
     cutoff: float,
     prefixes: list,
-    path: str
+    path: str,
 ) -> str:
-    """Compute and store pairwise Resnik of the provided graph at given path.
+    """Compute and store pairwise Resnik and Jaccard similarities.
 
     Parameters
     -------------------
@@ -32,31 +34,47 @@ def compute_pairwise_sims(
         The list of paths where files were written
     """
     print("Calculating pairwise Resnik scores...")
-    model = DAGResnik()
-    model.fit(dag, node_counts=counts)
-    interesting_hits = dict()
 
-    nodes_of_interest = [n for n in dag.get_node_names() if n.startswith("HP") or n.startswith("MP")]
+    resnik_model = DAGResnik()
+    resnik_model.fit(dag, node_counts=counts)
+    rs_hits = {}
+    js_hits = {}
 
-    # for each ontology class A (HP or MP) - settable by user
-    #     for each ontology class B (HP or MP)
-    for a in nodes_of_interest:
-        for b in nodes_of_interest:
+    dag_name = dag.get_name()
+    outpath = pathlib.Path.cwd() / path
+    rs_path = outpath / f"{dag_name}_resnik"
+    js_path = outpath / f"{dag_name}_jaccard"
+    paths = [rs_path, js_path]
 
+    nodes_of_interest = [
+        node
+        for node in dag.get_node_names()
+        if (node.split(":"))[0] in prefixes
+    ]
+    nodes_of_interest_i = nodes_of_interest
+    nodes_of_interest_j = nodes_of_interest
+
+    for node_i in nodes_of_interest_i:
+        for node_j in nodes_of_interest_j:
             try:
                 # call pairwise Resnik on r = A, B
-                rs = model.get_similarity_from_node_ids([A], [B])
+                rs = resnik_model.get_similarity_from_node_ids(
+                    [node_i], [node_j]
+                )
 
                 if rs > cutoff:
-                    # call pairwise Jaccard on r = A, B
-                    # put in interesting_hits
-                    pass
-                # model.get_pairwise_similarities(
-                #     graph=dag, return_similarities_dataframe=True
-                # ).to_csv(path, index=True, header=True)
-            except:
-                # probably some weird write error message
-                pass
+                    if node_i not in rs_hits:
+                        rs_hits[node_i] = {}
+                    rs_hits[node_i][node_j] = rs
+
+                    # TODO: call pairwise Jaccard on r = A, B
+                    # and save to js_hits
+
+            except ValueError as e:
+                print(e)
+
+    rs_hits.to_csv(rs_path, index=True, header=True)
+    js_hits.to_csv(js_path, index=True, header=True)
 
     return paths
 

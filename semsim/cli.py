@@ -21,6 +21,8 @@ def main():
 @click.option("--prefixes", "-p",
               callback=lambda _, __, x: x.split(',') if x else [],
               required=True)
+@click.option("--predicate", "-r", required=True,
+              default="biolink:subclass_of")
 @click.argument("ontology", default=None)
 def sim(
     ontology: str,
@@ -29,6 +31,7 @@ def sim(
     annot_col: str,
     output_dir: str,
     prefixes: list,
+    predicate: str,
 ) -> None:
     """Generate a file containing the semantic similarity.
 
@@ -43,6 +46,8 @@ def sim(
     :param annot_col: name of column in annotation file containing onto IDs
     :param prefixes: One or more node types to select based on prefix,
     comma-delimited, e.g., HP,MP,UPHENO
+    :param predicate: A predicate type to filter on.
+    Defaults to biolink:subclass_of.
     :return: None
     """
     print(f"Input ontology is {ontology}")
@@ -68,6 +73,7 @@ def sim(
         annot_col=annot_col,
         output_dir=output_dir,
         prefixes=prefixes,
+        predicate=predicate
     ):
         print(f"Wrote to {output_dir}.")
     else:
