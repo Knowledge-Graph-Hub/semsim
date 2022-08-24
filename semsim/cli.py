@@ -123,7 +123,6 @@ def phenodigm(
     :param output_dir: where to write out file
     :return: None
     """
-
     if len(prefixes) > 2 or len(prefixes) < 2:
         raise ValueError("Only pairs of prefixes are supported.")
     else:
