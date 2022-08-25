@@ -68,9 +68,6 @@ def compute_pairwise_sims(
                         rs_hits[node_i] = {}
                     rs_hits[node_i][node_j] = float(rs)
 
-                    # TODO: call pairwise Jaccard on r = A, B
-                    # and save to js_hits
-
             except ValueError as e:
                 node_i_name = dag.get_node_name_from_node_id(node_i)
                 node_j_name = dag.get_node_name_from_node_id(node_j)
@@ -78,13 +75,35 @@ def compute_pairwise_sims(
                 print(f"Offending nodes: {node_i_name} and {node_j_name}")
 
     rs_df = pd.DataFrame.from_dict(rs_hits)
-    for axis in ['columns', 'index']:
-        rs_df.rename(lambda x: dag.get_node_name_from_node_id(x),
-                     axis=axis,
-                     inplace=True)
+    for axis in ["columns", "index"]:
+        rs_df.rename(
+            lambda x: dag.get_node_name_from_node_id(x),
+            axis=axis,
+            inplace=True,
+        )
     rs_df.to_csv(rs_path, index=True, header=True)
 
-    # with js_path.open('w') as outfile:
+    print("Calculating pairwise Jaccard scores...")
+    js_df = pd.DataFrame(
+        dag.get_shared_ancestors_jaccard_adjacency_matrix(
+            dag.get_breadth_first_search_from_node_names(
+                src_node_name=dag.get_root_node_names()[0],
+                compute_predecessors=True,
+            ),
+            verbose=True,
+        ),
+        columns=dag.get_node_names(),
+        index=dag.get_node_names(),
+    )
+    js_df.drop(
+        columns=[col for col in js_df if col not in rs_df.columns],
+        inplace=True,
+    )
+    js_df.drop(
+        index=[idx for idx in js_df.index if idx not in rs_df.index],
+        inplace=True,
+    )
+    js_df.to_csv(js_path, index=True, header=True)
 
     return paths
 
