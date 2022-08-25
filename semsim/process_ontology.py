@@ -6,6 +6,7 @@ from collections import Counter
 import pandas as pd
 
 from .compute_pairwise_similarities import compute_pairwise_sims
+from .extra_prefixes import PREFIXES
 
 GRAPE_DATA_MOD = "grape.datasets.kgobo"
 
@@ -35,26 +36,30 @@ def get_similarities(
 
     # Some prefixes are helpful for traversing the graph,
     # but don't need to be included in the final simlarities.
-    # TODO: only show these if they're present in the graph
-    extra_prefixes = ["BFO", "owl", "PATO"]
+    all_extra_prefixes = PREFIXES
     traversal_prefixes = [f"{prefix}:" for prefix in prefixes]
-    for prefix in extra_prefixes:
-        traversal_prefixes.append(f"{prefix}:")
 
     print(f"Comparing nodes with these prefixes: {' '.join(focus_prefixes)}")
-    print(
-        "Also traversing nodes with these prefixes: "
-        f"{' '.join(extra_prefixes)}"
-    )
 
     onto_graph = (
         onto_graph_class(directed=True)
-        .filter_from_names(
-            edge_type_names_to_keep=[predicate],
-            node_prefixes_to_keep=traversal_prefixes,
-        )
         .remove_disconnected_nodes()
         .to_transposed()
+    )
+
+    all_node_prefixes = set(
+        [(name.split(":"))[0] for name in onto_graph.get_node_names()]
+    )
+
+    print("Also traversing nodes with these prefixes: ")
+    for prefix in all_extra_prefixes:
+        if prefix in all_node_prefixes and prefix not in focus_prefixes:
+            traversal_prefixes.append(f"{prefix}:")
+            print(prefix)
+
+    onto_graph = onto_graph.filter_from_names(
+        edge_type_names_to_keep=[predicate],
+        node_prefixes_to_keep=traversal_prefixes,
     )
 
     try:
