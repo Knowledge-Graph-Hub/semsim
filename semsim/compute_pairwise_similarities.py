@@ -39,7 +39,6 @@ def compute_pairwise_sims(
     resnik_model = DAGResnik()
     resnik_model.fit(dag, node_counts=counts)
     rs_hits = {}  # type: ignore
-    # js_hits = {}
 
     dag_name = dag.get_name()
     outpath = pathlib.Path.cwd() / path
@@ -66,7 +65,7 @@ def compute_pairwise_sims(
                 if rs > cutoff:
                     if node_i not in rs_hits:
                         rs_hits[node_i] = {}
-                    rs_hits[node_i][node_j] = float(rs)
+                    rs_hits[node_i][node_j] = rs
 
             except ValueError as e:
                 node_i_name = dag.get_node_name_from_node_id(node_i)
@@ -75,6 +74,7 @@ def compute_pairwise_sims(
                 print(f"Offending nodes: {node_i_name} and {node_j_name}")
 
     rs_df = pd.DataFrame.from_dict(rs_hits)
+    rs_df = rs_df.astype(float)
     for axis in ["columns", "index"]:
         rs_df.rename(
             lambda x: dag.get_node_name_from_node_id(x),
