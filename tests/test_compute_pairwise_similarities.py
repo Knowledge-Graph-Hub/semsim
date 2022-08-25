@@ -15,8 +15,8 @@ class TestComputePairwiseSimilarities(TestCase):
         """Set up."""
         self.test_graph_path_nodes = "tests/resources/test_hpo_nodes.tsv"
         self.test_graph_path_edges = "tests/resources/test_hpo_edges.tsv"
-        self.resnik_outpath = "tests/output/resnik_out"
-        self.jaccard_outpath = "tests/output/jaccard_out"
+        self.resnik_outpath = "tests/output/Graph_resnik"
+        self.jaccard_outpath = "tests/output/Graph_jaccard"
         self.test_graph = Graph.from_csv(
             directed=True,
             node_path=self.test_graph_path_nodes,
@@ -83,3 +83,4 @@ class TestComputePairwiseSimilarities(TestCase):
             path="tests/output/",
         )
         self.assertTrue(os.path.exists(self.resnik_outpath))
+        self.assertTrue(os.path.exists(self.jaccard_outpath))
