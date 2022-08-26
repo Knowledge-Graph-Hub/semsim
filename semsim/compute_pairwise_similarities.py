@@ -55,26 +55,24 @@ def compute_pairwise_sims(
     nodes_of_interest_j = dag.get_node_ids_from_node_names(nodes_of_interest)
 
     for node_i in tqdm(nodes_of_interest_i):
+        rs_hits[node_i] = []
         for node_j in nodes_of_interest_j:
             try:
-                # call pairwise Resnik on r = A, B
-                rs = resnik_model.get_similarity_from_node_ids(
-                    [node_i], [node_j]
+                rs = resnik_model.get_similarity_from_node_id(
+                    node_i,
+                    node_j,
                 )
-
                 if rs > cutoff:
-                    if node_i not in rs_hits:
-                        rs_hits[node_i] = {}
-                    rs_hits[node_i][node_j] = rs
-
+                    rs_hits[node_i].append(rs)
+                else:
+                    rs_hits[node_i].append(0)
             except ValueError as e:
-                node_i_name = dag.get_node_name_from_node_id(node_i)
-                node_j_name = dag.get_node_name_from_node_id(node_j)
                 print(e)
-                print(f"Offending nodes: {node_i_name} and {node_j_name}")
 
     rs_df = pd.DataFrame.from_dict(rs_hits)
+    rs_df = rs_df.loc[~(rs_df == 0).all(axis=1)]
     rs_df = rs_df.astype(float)
+    rs_df = rs_df.replace({0.0: pd.NA})
     for axis in ["columns", "index"]:
         rs_df.rename(
             lambda x: dag.get_node_name_from_node_id(x),
