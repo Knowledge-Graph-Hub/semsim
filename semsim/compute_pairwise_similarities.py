@@ -1,5 +1,6 @@
 """Compute pairwise similarities."""
 
+import os
 import pathlib
 from typing import Dict
 
@@ -69,11 +70,13 @@ def compute_pairwise_sims(
     )
     pd.concat(
         [
-            chunk.mask(chunk < cutoff)
+            chunk.mask(chunk < cutoff).dropna(axis=0, how='all')
             for chunk in iter_rs_df
             if chunk.index in nodes_of_interest
         ]
     ).to_csv(rs_path, index=nodes_of_interest, header=True)
+
+    os.remove(rs_path_temp)
 
     print("Calculating pairwise Jaccard scores...")
     js_df = pd.DataFrame(
