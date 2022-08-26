@@ -6,7 +6,6 @@ from typing import Dict
 import pandas as pd
 from grape import Graph
 from grape.similarities import DAGResnik
-from tqdm import tqdm
 
 
 def compute_pairwise_sims(
@@ -36,13 +35,10 @@ def compute_pairwise_sims(
     """
     print("Calculating pairwise Resnik scores...")
 
-    resnik_model = DAGResnik()
-    resnik_model.fit(dag, node_counts=counts)
-    rs_hits = {}  # type: ignore
-
     dag_name = dag.get_name()
     outpath = pathlib.Path.cwd() / path
     rs_path = outpath / f"{dag_name}_resnik"
+    rs_path_temp = outpath / f"{dag_name}_resnik_temp"
     js_path = outpath / f"{dag_name}_jaccard"
     paths = [rs_path, js_path]
 
@@ -51,35 +47,29 @@ def compute_pairwise_sims(
         for node in dag.get_node_names()
         if (node.split(":"))[0] in prefixes
     ]
-    nodes_of_interest_i = dag.get_node_ids_from_node_names(nodes_of_interest)
-    nodes_of_interest_j = dag.get_node_ids_from_node_names(nodes_of_interest)
 
-    for node_i in tqdm(nodes_of_interest_i):
-        rs_hits[node_i] = []
-        for node_j in nodes_of_interest_j:
-            try:
-                rs = resnik_model.get_similarity_from_node_id(
-                    node_i,
-                    node_j,
-                )
-                if rs > cutoff:
-                    rs_hits[node_i].append(rs)
-                else:
-                    rs_hits[node_i].append(0)
-            except ValueError as e:
-                print(e)
+    resnik_model = DAGResnik()
+    resnik_model.fit(dag, node_counts=counts)
 
-    rs_df = pd.DataFrame.from_dict(rs_hits)
-    rs_df = rs_df.loc[~(rs_df == 0).all(axis=1)]
-    rs_df = rs_df.astype(float)
-    rs_df = rs_df.replace({0.0: pd.NA})
-    for axis in ["columns", "index"]:
-        rs_df.rename(
-            lambda x: dag.get_node_name_from_node_id(x),
-            axis=axis,
-            inplace=True,
+    # Get all pairwise similarities
+    # Write to temp file for caching purposes
+    # (i.e., so we don't run out of memory)
+    try:
+        resnik_model.get_pairwise_similarities(
+            graph=dag, return_similarities_dataframe=True
+        ).to_csv(
+            rs_path_temp, index=True, header=True, columns=nodes_of_interest
         )
-    rs_df.to_csv(rs_path, index=True, header=True)
+    except ValueError as e:
+        print(e)
+
+    # Now load the file iteratively and filter
+    iter_rs_df = pd.read_csv(
+        rs_path_temp, iterator=True, index_col=0, chunksize=1
+    )
+    pd.concat(
+        [chunk for chunk in iter_rs_df if chunk.index in nodes_of_interest]
+    ).to_csv(rs_path, index=nodes_of_interest, header=True)
 
     print("Calculating pairwise Jaccard scores...")
     js_df = pd.DataFrame(
@@ -94,11 +84,11 @@ def compute_pairwise_sims(
         index=dag.get_node_names(),
     )
     js_df.drop(
-        columns=[col for col in js_df if col not in rs_df.columns],
+        columns=[col for col in js_df if col not in nodes_of_interest],
         inplace=True,
     )
     js_df.drop(
-        index=[idx for idx in js_df.index if idx not in rs_df.index],
+        index=[idx for idx in js_df.index if idx not in nodes_of_interest],
         inplace=True,
     )
     js_df.to_csv(js_path, index=True, header=True)
