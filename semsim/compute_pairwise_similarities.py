@@ -2,11 +2,13 @@
 
 import os
 import pathlib
+import subprocess
 from typing import Dict
 
 import pandas as pd
 from grape import Graph
 from grape.similarities import DAGResnik
+from tqdm import tqdm
 
 
 def compute_pairwise_sims(
@@ -65,14 +67,16 @@ def compute_pairwise_sims(
         print(e)
 
     # Now load the file iteratively and filter
+    print("Assembling output")
     iter_rs_df = pd.read_csv(
-        rs_path_temp, iterator=True, index_col=0, chunksize=1
+        rs_path_temp, iterator=True, index_col=0, chunksize=10
     )
     pd.concat(
         [
-            chunk.mask(chunk < cutoff).dropna(axis=0, how='all')
-            for chunk in iter_rs_df
-            if chunk.index in nodes_of_interest
+            chunk[~chunk.isin(nodes_of_interest)]
+            .mask(chunk < cutoff)
+            .dropna(axis=0, how="all")
+            for chunk in tqdm(iter_rs_df, unit="rows x 10")
         ]
     ).to_csv(rs_path, index=nodes_of_interest, header=True)
 
