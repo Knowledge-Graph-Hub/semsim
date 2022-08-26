@@ -68,7 +68,11 @@ def compute_pairwise_sims(
         rs_path_temp, iterator=True, index_col=0, chunksize=1
     )
     pd.concat(
-        [chunk for chunk in iter_rs_df if chunk.index in nodes_of_interest]
+        [
+            chunk.mask(chunk < cutoff)
+            for chunk in iter_rs_df
+            if chunk.index in nodes_of_interest
+        ]
     ).to_csv(rs_path, index=nodes_of_interest, header=True)
 
     print("Calculating pairwise Jaccard scores...")
