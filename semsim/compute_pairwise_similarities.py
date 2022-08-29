@@ -2,7 +2,9 @@
 
 import os
 import pathlib
-import subprocess
+import sys
+from io import StringIO
+from itertools import islice
 from typing import Dict
 
 import pandas as pd
@@ -41,7 +43,6 @@ def compute_pairwise_sims(
     dag_name = dag.get_name()
     outpath = pathlib.Path.cwd() / path
     rs_path = outpath / f"{dag_name}_resnik"
-    rs_path_temp = outpath / f"{dag_name}_resnik_temp"
     js_path = outpath / f"{dag_name}_jaccard"
     paths = [rs_path, js_path]
 
@@ -55,32 +56,16 @@ def compute_pairwise_sims(
     resnik_model.fit(dag, node_counts=counts)
 
     # Get all pairwise similarities
-    # Write to temp file for caching purposes
-    # (i.e., so we don't run out of memory)
     try:
-        resnik_model.get_pairwise_similarities(
+        rs_df = resnik_model.get_pairwise_similarities(
             graph=dag, return_similarities_dataframe=True
-        ).to_csv(
-            rs_path_temp, index=True, header=True, columns=nodes_of_interest
+        )
+        rs_df = rs_df.mask(rs_df < cutoff).dropna(axis=0, how="all")
+        rs_df.to_csv(
+            rs_path, index=nodes_of_interest, header=True, columns=nodes_of_interest
         )
     except ValueError as e:
         print(e)
-
-    # Now load the file iteratively and filter
-    print("Assembling output")
-    iter_rs_df = pd.read_csv(
-        rs_path_temp, iterator=True, index_col=0, chunksize=10
-    )
-    pd.concat(
-        [
-            chunk[~chunk.isin(nodes_of_interest)]
-            .mask(chunk < cutoff)
-            .dropna(axis=0, how="all")
-            for chunk in tqdm(iter_rs_df, unit="rows x 10")
-        ]
-    ).to_csv(rs_path, index=nodes_of_interest, header=True)
-
-    os.remove(rs_path_temp)
 
     print("Calculating pairwise Jaccard scores...")
     js_df = pd.DataFrame(
