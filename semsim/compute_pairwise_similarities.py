@@ -1,16 +1,11 @@
 """Compute pairwise similarities."""
 
-import os
 import pathlib
-import sys
-from io import StringIO
-from itertools import islice
 from typing import Dict
 
 import pandas as pd
 from grape import Graph
 from grape.similarities import DAGResnik
-from tqdm import tqdm
 
 
 def compute_pairwise_sims(
@@ -62,7 +57,10 @@ def compute_pairwise_sims(
         )
         rs_df = rs_df.mask(rs_df < cutoff).dropna(axis=0, how="all")
         rs_df.to_csv(
-            rs_path, index=nodes_of_interest, header=True, columns=nodes_of_interest
+            rs_path,
+            index=nodes_of_interest,
+            header=True,
+            columns=nodes_of_interest,
         )
     except ValueError as e:
         print(e)
