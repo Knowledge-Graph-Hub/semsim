@@ -16,7 +16,7 @@ python-versions = "*"
 
 [[package]]
 name = "asttokens"
-version = "2.0.7"
+version = "2.0.8"
 description = "Annotate AST trees with source code positions"
 category = "main"
 optional = false
@@ -26,7 +26,7 @@ python-versions = "*"
 six = "*"
 
 [package.extras]
-test = ["pytest", "astroid (<=2.5.3)"]
+test = ["astroid (<=2.5.3)", "pytest"]
 
 [[package]]
 name = "babel"
@@ -48,6 +48,32 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "bioregistry"
+version = "0.5.80"
+description = "Integrated registry of biological databases and nomenclatures"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+click = "*"
+more-click = "*"
+pydantic = "*"
+pystow = ">=0.1.13"
+requests = "*"
+tqdm = "*"
+
+[package.extras]
+align = ["pyyaml", "beautifulsoup4", "tabulate", "defusedxml", "class-resolver"]
+charts = ["matplotlib", "matplotlib-venn", "seaborn", "pandas"]
+docs = ["sphinx", "sphinx-rtd-theme", "sphinx-click", "sphinx-autodoc-typehints", "sphinx-automodapi", "autodoc-pydantic"]
+export = ["pyyaml", "rdflib", "rdflib-jsonld", "ndex2"]
+gha = ["more-itertools"]
+health = ["click-default-group", "pandas", "tabulate"]
+tests = ["coverage", "pytest", "more-itertools"]
+web = ["pyyaml", "rdflib", "rdflib-jsonld", "flask", "flasgger", "bootstrap-flask (<=2.0.0)", "markdown"]
+
+[[package]]
 name = "cache-decorator"
 version = "2.1.11"
 description = "a simple decorator to cache the results of computationally heavy functions"
@@ -66,15 +92,15 @@ humanize = ">=3.4.1"
 name = "certifi"
 version = "2022.6.15"
 description = "Python package for providing Mozilla's CA Bundle."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
 [[package]]
 name = "charset-normalizer"
-version = "2.1.0"
+version = "2.1.1"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6.0"
 
@@ -102,11 +128,14 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "compress-json"
-version = "1.0.7"
+version = "1.0.8"
 description = "The missing Python utility to read and write large compressed JSONs."
 category = "main"
 optional = false
 python-versions = "*"
+
+[package.dependencies]
+support_developer = "*"
 
 [package.extras]
 test = ["pytest", "pytest-cov", "coveralls", "validate-version-code", "codacy-coverage", "random-dict", "dict-hash"]
@@ -135,7 +164,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "ddd-subplots"
-version = "1.0.20"
+version = "1.0.21"
 description = "Python package making it easier to handle mixed 3d and 2d subplots."
 category = "main"
 optional = false
@@ -149,6 +178,7 @@ numpy = "*"
 opencv-python = "*"
 pygifsicle = "*"
 sklearn = "*"
+support_developer = "*"
 tqdm = "*"
 
 [package.extras]
@@ -164,18 +194,21 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "deflate-dict"
-version = "1.0.9"
+version = "1.0.11"
 description = "Python package to deflate and re-inflate dictionaries."
 category = "main"
 optional = false
 python-versions = "*"
+
+[package.dependencies]
+support_developer = ">=1.0.2"
 
 [package.extras]
 test = ["pytest", "pytest-cov", "coveralls", "validate-version-code", "codacy-coverage", "random-dict"]
 
 [[package]]
 name = "dict-hash"
-version = "1.1.26"
+version = "1.1.28"
 description = "Simple python tool to hash dictionaries using both default hash and sha256."
 category = "main"
 optional = false
@@ -183,13 +216,14 @@ python-versions = "*"
 
 [package.dependencies]
 deflate_dict = ">=1.0.8"
+support_developer = ">=1.0.2"
 
 [package.extras]
 test = ["pytest", "pytest-cov", "validate-version-code", "random-dict", "tqdm"]
 
 [[package]]
 name = "distlib"
-version = "0.3.5"
+version = "0.3.6"
 description = "Distribution utilities"
 category = "main"
 optional = false
@@ -220,7 +254,7 @@ test = ["pytest", "pytest-cov", "coveralls", "validate-version-code", "codacy-co
 
 [[package]]
 name = "embiggen"
-version = "0.11.27"
+version = "0.11.36"
 description = "🍇 Embiggen is the Python Graph Representation learning, Prediction and Evaluation module processing submodule of the GRAPE library."
 category = "main"
 optional = false
@@ -230,13 +264,15 @@ python-versions = ">=3.7.0"
 cache_decorator = ">=2.1.11"
 compress_pickle = ">=2.1.0"
 ddd_subplots = ">=1.0.20"
-ensmallen = ">=0.8.14"
+dict_hash = ">=1.1.28"
+ensmallen = ">=0.8.21"
+environments_utils = ">=1.0.6"
 keras_mixed_sequence = ">=1.0.28"
 matplotlib = ">=3.5.2"
 numpy = "*"
 packaging = "*"
 pandas = "*"
-sanitize_ml_labels = ">=1.0.38"
+sanitize_ml_labels = ">=1.0.45"
 scikit-learn = "*"
 tqdm = "*"
 userinput = ">=1.0.19"
@@ -247,13 +283,14 @@ test = ["codacy-coverage", "coveralls", "pytest", "pytest-cov", "validate-versio
 
 [[package]]
 name = "ensmallen"
-version = "0.8.15"
+version = "0.8.23"
 description = "🍇 Ensmallen is the Rust/Python high-performance graph processing submodule of the GraPE library."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
+bioregistry = ">=0.5.65"
 cache_decorator = ">=2.1.11"
 compress_json = ">=1.0.7"
 downloaders = ">=1.0.15"
@@ -266,18 +303,21 @@ userinput = ">=1.0.19"
 
 [[package]]
 name = "environments-utils"
-version = "1.0.4"
+version = "1.0.8"
 description = "Utilities to identify which environments is your python script running within."
 category = "main"
 optional = false
 python-versions = "*"
+
+[package.dependencies]
+support_developer = "*"
 
 [package.extras]
 test = ["pytest", "pytest-cov", "coveralls", "validate-version-code", "codacy-coverage"]
 
 [[package]]
 name = "executing"
-version = "0.9.1"
+version = "1.0.0"
 description = "Get the currently executing AST node of a frame, and other information"
 category = "main"
 optional = false
@@ -297,7 +337,7 @@ testing = ["covdefaults (>=2.2)", "coverage (>=6.4.2)", "pytest (>=7.1.2)", "pyt
 
 [[package]]
 name = "fonttools"
-version = "4.34.4"
+version = "4.37.1"
 description = "Tools to manipulate font files"
 category = "main"
 optional = false
@@ -319,15 +359,15 @@ woff = ["zopfli (>=0.1.4)", "brotlicffi (>=0.8.0)", "brotli (>=1.0.1)"]
 
 [[package]]
 name = "grape"
-version = "0.1.17"
-description = "🍇 GRAPE is a Rust/Python library for high-performance Graph Processing and Embedding."
+version = "0.1.23"
+description = "🍇 GRAPE is a Rust/Python Graph Representation Learning library for Predictions and Evaluations."
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-embiggen = ">=0.11.25"
-ensmallen = ">=0.8.14"
+embiggen = ">=0.11.36"
+ensmallen = ">=0.8.23"
 
 [[package]]
 name = "humanize"
@@ -344,13 +384,13 @@ tests = ["pytest-cov", "pytest", "freezegun"]
 name = "idna"
 version = "3.3"
 description = "Internationalized Domain Names in Applications (IDNA)"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 
 [[package]]
 name = "imageio"
-version = "2.21.1"
+version = "2.21.2"
 description = "Library for reading and writing a wide range of image, video, scientific, and volumetric data formats."
 category = "main"
 optional = false
@@ -540,7 +580,7 @@ setuptools_scm = ">=4,<7"
 
 [[package]]
 name = "matplotlib-inline"
-version = "0.1.3"
+version = "0.1.6"
 description = "Inline Matplotlib backend for Jupyter"
 category = "main"
 optional = false
@@ -550,8 +590,19 @@ python-versions = ">=3.5"
 traitlets = "*"
 
 [[package]]
+name = "more-click"
+version = "0.1.1"
+description = "More click."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+click = "*"
+
+[[package]]
 name = "numpy"
-version = "1.23.1"
+version = "1.23.2"
 description = "NumPy is the fundamental package for array computing with Python."
 category = "main"
 optional = false
@@ -719,23 +770,44 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "pydantic"
+version = "1.9.2"
+description = "Data validation and settings management using python type hints"
+category = "main"
+optional = false
+python-versions = ">=3.6.1"
+
+[package.dependencies]
+typing-extensions = ">=3.7.4.3"
+
+[package.extras]
+dotenv = ["python-dotenv (>=0.10.4)"]
+email = ["email-validator (>=1.0.3)"]
+
+[[package]]
 name = "pygifsicle"
-version = "1.0.5"
+version = "1.0.6"
 description = "Python package wrapping the gifsicle library for editing and optimizing gifs."
 category = "main"
 optional = false
 python-versions = "*"
+
+[package.dependencies]
+support_developer = ">=1.0.2"
 
 [package.extras]
 test = ["pytest", "pytest-cov", "coveralls", "validate-version-code", "codacy-coverage", "touch"]
 
 [[package]]
 name = "pygments"
-version = "2.12.0"
+version = "2.13.0"
 description = "Pygments is a syntax highlighting package written in Python."
 category = "main"
 optional = false
 python-versions = ">=3.6"
+
+[package.extras]
+plugins = ["importlib-metadata"]
 
 [[package]]
 name = "pyparsing"
@@ -747,6 +819,27 @@ python-versions = ">=3.6.8"
 
 [package.extras]
 diagrams = ["railroad-diagrams", "jinja2"]
+
+[[package]]
+name = "pystow"
+version = "0.4.6"
+description = "Easily pick a place to store data for your python package."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+click = "*"
+requests = "*"
+tqdm = "*"
+
+[package.extras]
+aws = ["boto3"]
+docs = ["sphinx", "sphinx-rtd-theme", "sphinx-click", "sphinx-autodoc-typehints", "sphinx-automodapi"]
+pandas = ["pandas"]
+rdf = ["rdflib"]
+tests = ["coverage", "pytest", "requests-file"]
+xml = ["lxml"]
 
 [[package]]
 name = "python-dateutil"
@@ -761,7 +854,7 @@ six = ">=1.5"
 
 [[package]]
 name = "pytz"
-version = "2022.1"
+version = "2022.2.1"
 description = "World timezone definitions, modern and historical"
 category = "main"
 optional = false
@@ -771,7 +864,7 @@ python-versions = "*"
 name = "requests"
 version = "2.28.1"
 description = "Python HTTP for Humans."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7, <4"
 
@@ -787,7 +880,7 @@ use_chardet_on_py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "sanitize-ml-labels"
-version = "1.0.43"
+version = "1.0.49"
 description = "Simple python package to sanitize in a standard way ML-related labels."
 category = "main"
 optional = false
@@ -795,6 +888,7 @@ python-versions = "*"
 
 [package.dependencies]
 compress_json = "*"
+support_developer = ">=1.0.2"
 
 [package.extras]
 test = ["pytest", "pytest-cov", "coveralls", "validate-version-code", "codacy-coverage"]
@@ -978,7 +1072,7 @@ test = ["pytest"]
 
 [[package]]
 name = "stack-data"
-version = "0.3.0"
+version = "0.5.0"
 description = "Extract data from python stack frames and tracebacks for informative displays"
 category = "main"
 optional = false
@@ -990,7 +1084,18 @@ executing = "*"
 pure-eval = "*"
 
 [package.extras]
-tests = ["pytest", "typeguard", "pygments", "littleutils", "cython"]
+tests = ["cython", "littleutils", "pygments", "typeguard", "pytest"]
+
+[[package]]
+name = "support-developer"
+version = "1.0.2"
+description = "Package designed to centralize messages to support developers development work."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+test = ["pytest-cov", "coveralls", "validate-version-code", "pytest", "codacy-coverage"]
 
 [[package]]
 name = "threadpoolctl"
@@ -1067,21 +1172,29 @@ python-versions = ">=3.7"
 test = ["pre-commit", "pytest"]
 
 [[package]]
+name = "typing-extensions"
+version = "4.3.0"
+description = "Backported and Experimental Type Hints for Python 3.7+"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "urllib3"
-version = "1.26.11"
+version = "1.26.12"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*, <4"
 
 [package.extras]
 brotli = ["brotlicffi (>=0.8.0)", "brotli (>=1.0.9)", "brotlipy (>=0.6.0)"]
-secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "certifi", "ipaddress"]
+secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "certifi", "urllib3-secure-extra", "ipaddress"]
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "userinput"
-version = "1.0.19"
+version = "1.0.20"
 description = "Simple python package to handle cli user input."
 category = "main"
 optional = false
@@ -1191,15 +1304,13 @@ backcall = [
     {file = "backcall-0.2.0-py2.py3-none-any.whl", hash = "sha256:fbbce6a29f263178a1f7915c1940bde0ec2b2a967566fe1c65c1dfb7422bd255"},
     {file = "backcall-0.2.0.tar.gz", hash = "sha256:5cbdbf27be5e7cfadb448baf0aa95508f91f2bbc6c6437cd9cd06e2a4c215e1e"},
 ]
+bioregistry = []
 cache-decorator = []
 certifi = [
     {file = "certifi-2022.6.15-py3-none-any.whl", hash = "sha256:fe86415d55e84719d75f8b69414f6438ac3547d2078ab91b67e779ef69378412"},
     {file = "certifi-2022.6.15.tar.gz", hash = "sha256:84c85a9078b11105f04f3036a9482ae10e4621616db313fe045dd24743a0820d"},
 ]
-charset-normalizer = [
-    {file = "charset-normalizer-2.1.0.tar.gz", hash = "sha256:575e708016ff3a5e3681541cb9d79312c416835686d054a23accb873b254f413"},
-    {file = "charset_normalizer-2.1.0-py3-none-any.whl", hash = "sha256:5189b6f22b01957427f35b6a08d9a0bc45b46d3788ef5a92e978433c7a35f8a5"},
-]
+charset-normalizer = []
 click = [
     {file = "click-8.1.3-py3-none-any.whl", hash = "sha256:bb4d8133cb15a609f44e8213d9b391b0809795062913b383c62be0ee95b1db48"},
     {file = "click-8.1.3.tar.gz", hash = "sha256:7682dc8afb30297001674575ea00d1814d808d6a36af415a82bd481d37ba7b8e"},
@@ -1208,9 +1319,7 @@ colorama = [
     {file = "colorama-0.4.5-py2.py3-none-any.whl", hash = "sha256:854bf444933e37f5824ae7bfc1e98d5bce2ebe4160d46b5edf346a89358e99da"},
     {file = "colorama-0.4.5.tar.gz", hash = "sha256:e6c6b4334fc50988a639d9b98aa429a0b57da6e17b9a44f0451f930b6967b7a4"},
 ]
-compress-json = [
-    {file = "compress_json-1.0.7.tar.gz", hash = "sha256:8deab9758c4960f7b84b4c8fde7e9df3ed188ff19dfc9d0798b21f91539d63aa"},
-]
+compress-json = []
 compress-pickle = [
     {file = "compress_pickle-2.1.0-py3-none-any.whl", hash = "sha256:598650da4686d9bd97bee185b61e74d7fe1872bb0c23909d5ed2d8793b4a8818"},
     {file = "compress_pickle-2.1.0.tar.gz", hash = "sha256:3e944ce0eeab5b6331324d62351c957d41c9327c8417d439843e88fe69b77991"},
@@ -1224,12 +1333,8 @@ decorator = [
     {file = "decorator-5.1.1-py3-none-any.whl", hash = "sha256:b8c3f85900b9dc423225913c5aace94729fe1fa9763b38939a95226f02d37186"},
     {file = "decorator-5.1.1.tar.gz", hash = "sha256:637996211036b6385ef91435e4fae22989472f9d571faba8927ba8253acbc330"},
 ]
-deflate-dict = [
-    {file = "deflate_dict-1.0.9.tar.gz", hash = "sha256:44d6415c3ab5c6f591c87126a567578f18da4a740f333a0a166b27105a5597c0"},
-]
-dict-hash = [
-    {file = "dict_hash-1.1.26.tar.gz", hash = "sha256:df462f2f431043981e91a3ac4c05a117e241544c03d790bbd79827bcb09d398a"},
-]
+deflate-dict = []
+dict-hash = []
 distlib = []
 docutils = []
 downloaders = [
@@ -1237,9 +1342,7 @@ downloaders = [
 ]
 embiggen = []
 ensmallen = []
-environments-utils = [
-    {file = "environments_utils-1.0.4.tar.gz", hash = "sha256:22de584295536f8da0702fd6ba2858fba33ee77188165bf4108647684ef4ce0e"},
-]
+environments-utils = []
 executing = []
 filelock = []
 fonttools = []
@@ -1325,10 +1428,8 @@ markupsafe = [
     {file = "MarkupSafe-2.1.1.tar.gz", hash = "sha256:7f91197cc9e48f989d12e4e6fbc46495c446636dfc81b9ccf50bb0ec74b91d4b"},
 ]
 matplotlib = []
-matplotlib-inline = [
-    {file = "matplotlib-inline-0.1.3.tar.gz", hash = "sha256:a04bfba22e0d1395479f866853ec1ee28eea1485c1d69a6faf00dc3e24ff34ee"},
-    {file = "matplotlib_inline-0.1.3-py3-none-any.whl", hash = "sha256:aed605ba3b72462d64d475a21a9296f400a19c4f74a31b59103d2a99ffd5aa5c"},
-]
+matplotlib-inline = []
+more-click = []
 numpy = []
 opencv-python = [
     {file = "opencv-python-4.6.0.66.tar.gz", hash = "sha256:c5bfae41ad4031e66bb10ec4a0a2ffd3e514d092652781e8b1ac98d1b59f1158"},
@@ -1465,32 +1566,24 @@ py = [
 py-cpuinfo = [
     {file = "py-cpuinfo-8.0.0.tar.gz", hash = "sha256:5f269be0e08e33fd959de96b34cd4aeeeacac014dd8305f70eb28d06de2345c5"},
 ]
-pygifsicle = [
-    {file = "pygifsicle-1.0.5.tar.gz", hash = "sha256:be7fef569c5a52c03493ab6cdb3a661634e0863127abdd5c57cbd29150fb5dfc"},
-]
-pygments = [
-    {file = "Pygments-2.12.0-py3-none-any.whl", hash = "sha256:dc9c10fb40944260f6ed4c688ece0cd2048414940f1cea51b8b226318411c519"},
-    {file = "Pygments-2.12.0.tar.gz", hash = "sha256:5eb116118f9612ff1ee89ac96437bb6b49e8f04d8a13b514ba26f620208e26eb"},
-]
+pydantic = []
+pygifsicle = []
+pygments = []
 pyparsing = [
     {file = "pyparsing-3.0.9-py3-none-any.whl", hash = "sha256:5026bae9a10eeaefb61dab2f09052b9f4307d44aee4eda64b309723d8d206bbc"},
     {file = "pyparsing-3.0.9.tar.gz", hash = "sha256:2b020ecf7d21b687f219b71ecad3631f644a47f01403fa1d1036b0c6416d70fb"},
 ]
+pystow = []
 python-dateutil = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
     {file = "python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
 ]
-pytz = [
-    {file = "pytz-2022.1-py2.py3-none-any.whl", hash = "sha256:e68985985296d9a66a881eb3193b0906246245294a881e7c8afe623866ac6a5c"},
-    {file = "pytz-2022.1.tar.gz", hash = "sha256:1e760e2fe6a8163bc0b3d9a19c4f84342afa0a2affebfaa84b01b978a02ecaa7"},
-]
+pytz = []
 requests = [
     {file = "requests-2.28.1-py3-none-any.whl", hash = "sha256:8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349"},
     {file = "requests-2.28.1.tar.gz", hash = "sha256:7c5599b102feddaa661c826c56ab4fee28bfd17f5abca1ebbe3e7f19d7c97983"},
 ]
-sanitize-ml-labels = [
-    {file = "sanitize_ml_labels-1.0.43.tar.gz", hash = "sha256:37549349f362921d873b7a5700fe1e702360531130c1ee394d12207b27fa03b1"},
-]
+sanitize-ml-labels = []
 scikit-learn = []
 scipy = [
     {file = "scipy-1.6.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:a15a1f3fc0abff33e792d6049161b7795909b40b97c6cc2934ed54384017ab76"},
@@ -1550,10 +1643,8 @@ sphinxcontrib-serializinghtml = [
     {file = "sphinxcontrib-serializinghtml-1.1.5.tar.gz", hash = "sha256:aa5f6de5dfdf809ef505c4895e51ef5c9eac17d0f287933eb49ec495280b6952"},
     {file = "sphinxcontrib_serializinghtml-1.1.5-py2.py3-none-any.whl", hash = "sha256:352a9a00ae864471d3a7ead8d7d79f5fc0b57e8b3f95e9867eb9eb28999b92fd"},
 ]
-stack-data = [
-    {file = "stack_data-0.3.0-py3-none-any.whl", hash = "sha256:aa1d52d14d09c7a9a12bb740e6bdfffe0f5e8f4f9218d85e7c73a8c37f7ae38d"},
-    {file = "stack_data-0.3.0.tar.gz", hash = "sha256:77bec1402dcd0987e9022326473fdbcc767304892a533ed8c29888dacb7dddbc"},
-]
+stack-data = []
+support-developer = []
 threadpoolctl = [
     {file = "threadpoolctl-3.1.0-py3-none-any.whl", hash = "sha256:8b99adda265feb6773280df41eece7b2e6561b772d21ffd52e372f999024907b"},
     {file = "threadpoolctl-3.1.0.tar.gz", hash = "sha256:a335baacfaa4400ae1f0d8e3a58d6674d2f8828e3716bb2802c44955ad391380"},
@@ -1577,6 +1668,10 @@ tqdm = [
 traitlets = [
     {file = "traitlets-5.3.0-py3-none-any.whl", hash = "sha256:65fa18961659635933100db8ca120ef6220555286949774b9cfc106f941d1c7a"},
     {file = "traitlets-5.3.0.tar.gz", hash = "sha256:0bb9f1f9f017aa8ec187d8b1b2a7a6626a2a1d877116baba52a129bfa124f8e2"},
+]
+typing-extensions = [
+    {file = "typing_extensions-4.3.0-py3-none-any.whl", hash = "sha256:25642c956049920a5aa49edcdd6ab1e06d7e5d467fc00e0506c44ac86fbfca02"},
+    {file = "typing_extensions-4.3.0.tar.gz", hash = "sha256:e6d2677a32f47fc7eb2795db1dd15c1f34eff616bcaf2cfb5e997f854fa1c4a6"},
 ]
 urllib3 = []
 userinput = []
