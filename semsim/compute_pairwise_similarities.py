@@ -65,6 +65,8 @@ def compute_pairwise_sims(
     except ValueError as e:
         print(e)
 
+    # TODO: get this to filter properly
+
     print("Calculating pairwise Jaccard scores...")
     js_df = pd.DataFrame(
         dag.get_shared_ancestors_jaccard_adjacency_matrix(
@@ -85,6 +87,8 @@ def compute_pairwise_sims(
         index=[idx for idx in js_df.index if idx not in nodes_of_interest],
         inplace=True,
     )
+    js_df = js_df.mask(rs_df < cutoff).dropna(axis=0, how="all")
+
     js_df.to_csv(js_path, index=True, header=True)
 
     return paths
