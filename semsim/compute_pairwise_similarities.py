@@ -59,8 +59,11 @@ def compute_pairwise_sims(
         rs_df = resnik_model.get_pairwise_similarities(
             graph=dag, return_similarities_dataframe=True
         )
-        rs_df = rs_df.mask(rs_df < cutoff).dropna(axis=0, how="all")
-        rs_df = rs_df.astype(pd.SparseDtype("float", np.nan))
+        rs_df = (
+            rs_df.mask(rs_df < cutoff)
+            .dropna(axis=0, how="all")
+            .astype(pd.SparseDtype("float", np.nan))
+        )
         print("Writing output...")
         rs_df.to_csv(
             rs_path,
