@@ -61,6 +61,7 @@ def compute_pairwise_sims(
         )
         rs_df = rs_df.mask(rs_df < cutoff).dropna(axis=0, how="all")
         rs_df = rs_df.astype(pd.SparseDtype("float", np.nan))
+        print("Writing output...")
         rs_df.to_csv(
             rs_path,
             index=nodes_of_interest,
@@ -94,7 +95,7 @@ def compute_pairwise_sims(
     js_df = js_df.mask(rs_df.sparse.to_dense() < cutoff).dropna(
         axis=0, how="all"
     )
-
+    print("Writing output...")
     js_df.to_csv(js_path, index=True, header=True)
 
     return paths
