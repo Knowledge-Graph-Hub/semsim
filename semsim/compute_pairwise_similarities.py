@@ -91,8 +91,6 @@ def compute_pairwise_sims(
         inplace=True,
     )
 
-    # TODO: this doesn't work, but maybe removing values with NA in rs_df will
-
     js_df = js_df.mask(rs_df.sparse.to_dense() < cutoff).dropna(
         axis=0, how="all"
     )
