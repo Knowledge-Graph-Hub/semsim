@@ -3,6 +3,7 @@
 import pathlib
 from typing import Dict
 
+import numpy as np
 import pandas as pd
 from grape import Graph
 from grape.similarities import DAGResnik
@@ -51,11 +52,15 @@ def compute_pairwise_sims(
     resnik_model.fit(dag, node_counts=counts)
 
     # Get all pairwise similarities
+    # This is converted to Sparse as we expect
+    # most of the similarities to be below
+    # a cutoff value.
     try:
         rs_df = resnik_model.get_pairwise_similarities(
             graph=dag, return_similarities_dataframe=True
         )
         rs_df = rs_df.mask(rs_df < cutoff).dropna(axis=0, how="all")
+        rs_df = rs_df.astype(pd.SparseDtype("float", np.nan))
         rs_df.to_csv(
             rs_path,
             index=nodes_of_interest,
@@ -64,8 +69,6 @@ def compute_pairwise_sims(
         )
     except ValueError as e:
         print(e)
-
-    # TODO: get this to filter properly
 
     print("Calculating pairwise Jaccard scores...")
     js_df = pd.DataFrame(
@@ -87,7 +90,12 @@ def compute_pairwise_sims(
         index=[idx for idx in js_df.index if idx not in nodes_of_interest],
         inplace=True,
     )
-    js_df = js_df.mask(rs_df < cutoff).dropna(axis=0, how="all")
+
+    # TODO: this doesn't work, but maybe removing values with NA in rs_df will
+
+    js_df = js_df.mask(rs_df.sparse.to_dense() < cutoff).dropna(
+        axis=0, how="all"
+    )
 
     js_df.to_csv(js_path, index=True, header=True)
 
