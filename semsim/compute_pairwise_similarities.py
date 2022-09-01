@@ -82,10 +82,7 @@ def compute_pairwise_sims(
             .to_frame()
             .reset_index()
             .rename(
-                columns={
-                    "level_0": "node_1",
-                    "level_1": "node_2",
-                    0: "resnik"}
+                columns={"level_0": "node_1", "level_1": "node_2", 0: "resnik"}
             )
         )
         print(rs_df_melted)
