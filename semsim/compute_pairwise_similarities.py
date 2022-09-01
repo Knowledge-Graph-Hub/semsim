@@ -64,6 +64,28 @@ def compute_pairwise_sims(
             .dropna(axis=0, how="all")
             .astype(pd.SparseDtype("float", np.nan))
         )
+
+        # The following line reshapes the rs_df to a DataFrame with 3 columns:
+        # => ['index', 'key', 'value']
+        # Next step would be calculating the Jaccard ('get_ancestors_jaccard_from_node_names')
+        # between columns 'index' and 'key'
+        import pdb
+
+        pdb.set_trace()
+        rs_df_melted = (
+            rs_df.reset_index()
+            .melt(id_vars="index", var_name="key", value_name="value")
+            .dropna(axis=0)
+        )
+        # bfs = dag.get_shared_ancestors_jaccard_adjacency_matrix(
+        #     dag.get_breadth_first_search_from_node_names(
+        #         src_node_name=dag.get_root_node_names()[0],
+        #         compute_predecessors=True,
+        #     ))
+
+        # dag.get_ancestors_jaccard_from_node_names( bfs,first_node_names = list(rs_df_melted['index']),
+        #     second_node_names = list(rs_df_melted['key']))
+
         print("Writing output...")
         rs_df.to_csv(
             rs_path,
