@@ -133,3 +133,4 @@ dmypy.json
 .pyre/
 .vscode/settings.json
 graphs/kghub/*
+graphs/kgobo/*
