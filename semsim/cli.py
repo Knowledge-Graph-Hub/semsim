@@ -18,11 +18,15 @@ def main():
 @click.option("--output_dir", "-o", required=False, default="data")
 @click.option("--annot_file", "-a", required=False, default=None)
 @click.option("--annot_col", "-c", required=False)
-@click.option("--prefixes", "-p",
-              callback=lambda _, __, x: x.split(',') if x else [],
-              required=True)
-@click.option("--predicate", "-r", required=True,
-              default="biolink:subclass_of")
+@click.option(
+    "--prefixes",
+    "-p",
+    callback=lambda _, __, x: x.split(",") if x else [],
+    required=True,
+)
+@click.option(
+    "--predicate", "-r", required=True, default="biolink:subclass_of"
+)
 @click.argument("ontology", default=None)
 def sim(
     ontology: str,
@@ -74,7 +78,7 @@ def sim(
         annot_col=annot_col,
         output_dir=output_dir,
         prefixes=prefixes,
-        predicate=predicate
+        predicate=predicate,
     ):
         print(f"Wrote to {output_dir}.")
     else:
@@ -91,23 +95,22 @@ def sim(
     required=True,
     default="data/upheno_mapping_all.csv",
 )
-@click.option(
-    "--resnik_sim_file", "-r", required=True
-)
-@click.option(
-    "--jaccard_sim_file", "-j", required=True
-)
+@click.option("--resnik_sim_file", "-r", required=True)
+@click.option("--jaccard_sim_file", "-j", required=True)
 @click.option("--cutoff", "-c", required=True, default=2.5)
-@click.option("--prefixes", "-p",
-              callback=lambda _, __, x: x.split(',') if x else [],
-              required=True)
+@click.option(
+    "--prefixes",
+    "-p",
+    callback=lambda _, __, x: x.split(",") if x else [],
+    required=True,
+)
 def phenodigm(
     cutoff: str,
     jaccard_sim_file: str,
     resnik_sim_file: str,
     mapping: str,
     output_dir: str,
-    prefixes: list
+    prefixes: list,
 ) -> None:
     """Produce phenodigm-style similarity input file.
 
