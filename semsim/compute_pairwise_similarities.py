@@ -74,6 +74,17 @@ def compute_pairwise_sims(
             .melt(id_vars="index", var_name="node_2", value_name="resnik")
             .dropna(axis=0)
         )
+        # OR use stack as suggested by Justin:
+        # (https://github.com/Knowledge-Graph-Hub/semsim/pull/4#issuecomment-1234574676)
+        # rs_df_stacked = (
+        #     rs_df.stack()
+        #     .to_frame()
+        #     .reset_index()
+        #     .rename(
+        #         columns={"level_0": "node_1", "level_1": "node_2", 0: "resnik"}
+        #     )
+        # )
+        
         # bfs = dag.get_shared_ancestors_jaccard_adjacency_matrix(
         #     dag.get_breadth_first_search_from_node_names(
         #         src_node_name=dag.get_root_node_names()[0],
