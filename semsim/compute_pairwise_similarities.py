@@ -67,7 +67,8 @@ def compute_pairwise_sims(
 
         # The following line reshapes the rs_df to a DataFrame with 3 columns:
         # => ['index', 'node_2', 'resnik']
-        # Next step would be calculating the Jaccard ('get_ancestors_jaccard_from_node_names')
+        # Next step would be calculating the Jaccard
+        # ('get_ancestors_jaccard_from_node_names')
         # between columns 'index' and 'node_2'
         rs_df_melted = (
             rs_df.reset_index()
@@ -76,23 +77,30 @@ def compute_pairwise_sims(
         )
         # OR use stack as suggested by Justin:
         # (https://github.com/Knowledge-Graph-Hub/semsim/pull/4#issuecomment-1234574676)
-        # rs_df_stacked = (
-        #     rs_df.stack()
-        #     .to_frame()
-        #     .reset_index()
-        #     .rename(
-        #         columns={"level_0": "node_1", "level_1": "node_2", 0: "resnik"}
-        #     )
-        # )
-        
+        rs_df_stacked = (
+            rs_df.stack()
+            .to_frame()
+            .reset_index()
+            .rename(
+                columns={
+                    "level_0": "node_1",
+                    "level_1": "node_2",
+                    0: "resnik"}
+            )
+        )
+        print(rs_df_melted)
+        print(rs_df_stacked)
+
         # bfs = dag.get_shared_ancestors_jaccard_adjacency_matrix(
         #     dag.get_breadth_first_search_from_node_names(
         #         src_node_name=dag.get_root_node_names()[0],
         #         compute_predecessors=True,
         #     ))
 
-        # dag.get_ancestors_jaccard_from_node_names( bfs,first_node_names = list(rs_df_melted['index']),
-        #     second_node_names = list(rs_df_melted['node_2']))
+        # dag.get_ancestors_jaccard_from_node_names(
+        #   bfs,
+        # first_node_names = list(rs_df_melted['index']),
+        # second_node_names = list(rs_df_melted['node_2']))
 
         print("Writing output...")
         rs_df.to_csv(
