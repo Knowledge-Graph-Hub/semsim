@@ -66,15 +66,12 @@ def compute_pairwise_sims(
         )
 
         # The following line reshapes the rs_df to a DataFrame with 3 columns:
-        # => ['index', 'key', 'value']
+        # => ['index', 'node_2', 'resnik']
         # Next step would be calculating the Jaccard ('get_ancestors_jaccard_from_node_names')
-        # between columns 'index' and 'key'
-        import pdb
-
-        pdb.set_trace()
+        # between columns 'index' and 'node_2'
         rs_df_melted = (
             rs_df.reset_index()
-            .melt(id_vars="index", var_name="key", value_name="value")
+            .melt(id_vars="index", var_name="node_2", value_name="resnik")
             .dropna(axis=0)
         )
         # bfs = dag.get_shared_ancestors_jaccard_adjacency_matrix(
@@ -84,7 +81,7 @@ def compute_pairwise_sims(
         #     ))
 
         # dag.get_ancestors_jaccard_from_node_names( bfs,first_node_names = list(rs_df_melted['index']),
-        #     second_node_names = list(rs_df_melted['key']))
+        #     second_node_names = list(rs_df_melted['node_2']))
 
         print("Writing output...")
         rs_df.to_csv(
