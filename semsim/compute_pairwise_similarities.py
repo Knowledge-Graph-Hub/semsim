@@ -42,12 +42,6 @@ def compute_pairwise_sims(
     js_path = outpath / f"{dag_name}_jaccard"
     paths = [rs_path, js_path]
 
-    nodes_of_interest = [
-        node
-        for node in dag.get_node_names()
-        if (node.split(":"))[0] in prefixes
-    ]
-
     resnik_model = DAGResnik()
     resnik_model.fit(dag, node_counts=counts)
 
