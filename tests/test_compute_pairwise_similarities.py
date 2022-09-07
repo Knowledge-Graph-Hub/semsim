@@ -83,4 +83,5 @@ class TestComputePairwiseSimilarities(TestCase):
             path="tests/output/",
         )
         self.assertTrue(os.path.exists(self.resnik_outpath))
+        print(os.listdir("tests/output/"))
         self.assertTrue(os.path.exists(self.jaccard_outpath))
