@@ -38,11 +38,6 @@ jobs:
     - name: Install library
       run: poetry install --no-interaction
 
-    - name: Set Swap Space
-      uses: hrshdhgd/swap-space@main
-      with:
-        swap-size-gb: 10
-
     #----------------------------------------------
     #              run tox
     #----------------------------------------------
