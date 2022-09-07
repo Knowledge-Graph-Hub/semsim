@@ -87,14 +87,16 @@ def compute_pairwise_sims(
         )
         # print(rs_df_melted)
         print(rs_df_stacked)
-        bfs = dag.get_breadth_first_search_from_node_names(src_node_name=dag.get_root_node_names()[0],compute_predecessors=True,)
-        rs_df_stacked['jaccard'] = dag.get_ancestors_jaccard_from_node_names(bfs, list(rs_df_stacked['node_1']), list(rs_df_stacked['node_2']))
+        bfs = dag.get_breadth_first_search_from_node_names(
+            src_node_name=dag.get_root_node_names()[0],
+            compute_predecessors=True,
+        )
+        rs_df_stacked["jaccard"] = dag.get_ancestors_jaccard_from_node_names(
+            bfs, list(rs_df_stacked["node_1"]), list(rs_df_stacked["node_2"])
+        )
 
         print("Writing output...")
-        rs_df_stacked.to_csv(
-            rs_path,
-            index=False
-        )
+        rs_df_stacked.to_csv(rs_path, index=False)
     except ValueError as e:
         print(e)
 
