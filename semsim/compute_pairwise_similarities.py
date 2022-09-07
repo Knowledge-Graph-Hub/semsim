@@ -70,11 +70,11 @@ def compute_pairwise_sims(
         # Next step would be calculating the Jaccard
         # ('get_ancestors_jaccard_from_node_names')
         # between columns 'index' and 'node_2'
-        rs_df_melted = (
-            rs_df.reset_index()
-            .melt(id_vars="index", var_name="node_2", value_name="resnik")
-            .dropna(axis=0)
-        )
+        # rs_df_melted = (
+        #     rs_df.reset_index()
+        #     .melt(id_vars="index", var_name="node_2", value_name="resnik")
+        #     .dropna(axis=0)
+        # )
         # OR use stack as suggested by Justin:
         # (https://github.com/Knowledge-Graph-Hub/semsim/pull/4#issuecomment-1234574676)
         rs_df_stacked = (
@@ -85,26 +85,15 @@ def compute_pairwise_sims(
                 columns={"level_0": "node_1", "level_1": "node_2", 0: "resnik"}
             )
         )
-        print(rs_df_melted)
+        # print(rs_df_melted)
         print(rs_df_stacked)
-
-        # bfs = dag.get_shared_ancestors_jaccard_adjacency_matrix(
-        #     dag.get_breadth_first_search_from_node_names(
-        #         src_node_name=dag.get_root_node_names()[0],
-        #         compute_predecessors=True,
-        #     ))
-
-        # dag.get_ancestors_jaccard_from_node_names(
-        #   bfs,
-        # first_node_names = list(rs_df_melted['index']),
-        # second_node_names = list(rs_df_melted['node_2']))
+        bfs = dag.get_breadth_first_search_from_node_names(src_node_name=dag.get_root_node_names()[0],compute_predecessors=True,)
+        rs_df_stacked['jaccard'] = dag.get_ancestors_jaccard_from_node_names(bfs, list(rs_df_stacked['node_1']), list(rs_df_stacked['node_2']))
 
         print("Writing output...")
-        rs_df.to_csv(
+        rs_df_stacked.to_csv(
             rs_path,
-            index=nodes_of_interest,
-            header=True,
-            columns=nodes_of_interest,
+            index=False
         )
     except ValueError as e:
         print(e)
