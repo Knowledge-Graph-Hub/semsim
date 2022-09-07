@@ -87,43 +87,18 @@ def compute_pairwise_sims(
         )
         # print(rs_df_melted)
         print(rs_df_stacked)
-        bfs = dag.get_breadth_first_search_from_node_names(src_node_name=dag.get_root_node_names()[0],compute_predecessors=True,)
-        rs_df_stacked['jaccard'] = dag.get_ancestors_jaccard_from_node_names(bfs, list(rs_df_stacked['node_1']), list(rs_df_stacked['node_2']))
+        bfs = dag.get_breadth_first_search_from_node_names(
+            src_node_name=dag.get_root_node_names()[0],
+            compute_predecessors=True,
+        )
+        rs_df_stacked["jaccard"] = dag.get_ancestors_jaccard_from_node_names(
+            bfs, list(rs_df_stacked["node_1"]), list(rs_df_stacked["node_2"])
+        )
 
         print("Writing output...")
-        rs_df_stacked.to_csv(
-            rs_path,
-            index=False
-        )
+        rs_df_stacked.to_csv(rs_path, index=False)
     except ValueError as e:
         print(e)
-
-    print("Calculating pairwise Jaccard scores...")
-    js_df = pd.DataFrame(
-        dag.get_shared_ancestors_jaccard_adjacency_matrix(
-            dag.get_breadth_first_search_from_node_names(
-                src_node_name=dag.get_root_node_names()[0],
-                compute_predecessors=True,
-            ),
-            verbose=True,
-        ),
-        columns=dag.get_node_names(),
-        index=dag.get_node_names(),
-    )
-    js_df.drop(
-        columns=[col for col in js_df if col not in nodes_of_interest],
-        inplace=True,
-    )
-    js_df.drop(
-        index=[idx for idx in js_df.index if idx not in nodes_of_interest],
-        inplace=True,
-    )
-
-    js_df = js_df.mask(rs_df.sparse.to_dense() < cutoff).dropna(
-        axis=0, how="all"
-    )
-    print("Writing output...")
-    js_df.to_csv(js_path, index=True, header=True)
 
     return paths
 
