@@ -13,7 +13,6 @@ def compute_pairwise_sims(
     dag: Graph,
     counts: Dict[str, int],
     cutoff: float,
-    prefixes: list,
     path: str,
 ) -> list:
     """Compute and store pairwise Resnik and Jaccard similarities.
@@ -28,9 +27,6 @@ def compute_pairwise_sims(
         The directory where to store the pairwise similarity.
     cutoff: float
         Pairs with Resnik similarity below this value will not be retained.
-    prefixes: list
-        Nodes with one of these prefixes will be compared for similarity.
-        If not provided, the comparison will be all vs. all on the DAG.
     return: list
         The list of paths where files were written
     """

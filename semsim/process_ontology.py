@@ -110,7 +110,6 @@ def get_similarities(
         dag=onto_graph,
         counts=counts,
         cutoff=cutoff,
-        prefixes=focus_prefixes,
         path=output_dir,
     )
 

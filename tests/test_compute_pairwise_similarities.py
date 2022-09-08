@@ -79,8 +79,6 @@ class TestComputePairwiseSimilarities(TestCase):
             dag=self.test_graph,
             counts=self.test_counts,
             cutoff=2.5,
-            prefixes=["HP", "MP"],
             path="tests/output/",
         )
         self.assertTrue(os.path.exists(self.resnik_outpath))
-        self.assertTrue(os.path.exists(self.jaccard_outpath))
