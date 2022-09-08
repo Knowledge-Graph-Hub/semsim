@@ -111,6 +111,7 @@ def get_similarities(
         counts=counts,
         cutoff=cutoff,
         path=output_dir,
+        prefixes=focus_prefixes,
     )
 
     return success
