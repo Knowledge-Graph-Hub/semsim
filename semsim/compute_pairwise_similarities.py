@@ -49,11 +49,9 @@ def compute_pairwise_sims(
         rs_df = resnik_model.get_pairwise_similarities(
             graph=dag, return_similarities_dataframe=True
         )
-        rs_df = (
-            rs_df.mask(rs_df < cutoff)
-            .dropna(axis=0, how="all")
-            .astype(pd.SparseDtype("float", np.nan))
-        )
+        rs_df.mask(rs_df < cutoff, inplace=True)
+        rs_df.dropna(axis=0, how="all", inplace=True)
+        rs_df = rs_df.astype(pd.SparseDtype("float", np.nan))
 
         # The following line reshapes the rs_df to a DataFrame with 3 columns:
         # => ['index', 'node_2', 'resnik']
