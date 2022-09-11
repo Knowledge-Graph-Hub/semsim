@@ -3,6 +3,7 @@
 import pathlib
 from typing import Dict
 
+import numpy as np
 import pandas as pd
 from grape import Graph
 from grape.similarities import DAGResnik
@@ -33,7 +34,7 @@ def compute_pairwise_sims(
     return: list
         The list of paths where files were written
     """
-    print(f"Calculating Resnik scores for {prefixes}...")
+    print(f"Calculating Resnik scores for {', '.join(prefixes)}...")
 
     dag_name = dag.get_name()
     outpath = pathlib.Path.cwd() / path
@@ -44,30 +45,26 @@ def compute_pairwise_sims(
     resnik_model = DAGResnik()
     resnik_model.fit(dag, node_counts=counts)
 
-    # Get all pairwise similarities
-    # This is converted to Sparse as we expect
-    # most of the similarities to be below
-    # a cutoff value.
+    # Get all similarities,
+    # based on the provided prefixes and cutoff.
     try:
-        rs_df = resnik_model.get_similarities_from_bipartite_graph_from_edge_node_prefixes(
-            source_node_prefixes=prefixes,
-            destination_node_prefixes=prefixes,
-            minimum_similarity=cutoff,
-            return_similarities_dataframe=True,
-        )
-
-        rs_df.rename(
-            columns={"level_0": "node_1", "level_1": "node_2", 0: "resnik"},
-            inplace=True,
-        )
+        rs_df = resnik_model. \
+            get_similarities_from_bipartite_graph_from_edge_node_prefixes(
+                source_node_prefixes=prefixes,
+                destination_node_prefixes=prefixes,
+                minimum_similarity=cutoff,
+                return_similarities_dataframe=True,
+            )
 
         bfs = dag.get_breadth_first_search_from_node_names(
             src_node_name=dag.get_root_node_names()[0],
             compute_predecessors=True,
         )
         rs_df["jaccard"] = dag.get_ancestors_jaccard_from_node_names(
-            bfs, list(rs_df["node_1"]), list(rs_df["node_2"])
+            bfs, list(rs_df["source"]), list(rs_df["destination"])
         )
+
+        rs_df.sort_values(by=["similarity"], ascending=False, inplace=True)
 
         print("Writing output...")
         rs_df.to_csv(rs_path, index=False)
