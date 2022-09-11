@@ -79,5 +79,6 @@ class TestComputePairwiseSimilarities(TestCase):
             counts=self.test_counts,
             cutoff=2.5,
             path="tests/output/",
+            prefixes=["HP", "MP"],
         )
         self.assertTrue(os.path.exists(self.resnik_outpath))
