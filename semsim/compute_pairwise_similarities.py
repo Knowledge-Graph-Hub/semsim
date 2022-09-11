@@ -3,7 +3,6 @@
 import pathlib
 from typing import Dict
 
-import numpy as np
 import pandas as pd
 from grape import Graph
 from grape.similarities import DAGResnik
