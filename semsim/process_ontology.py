@@ -51,12 +51,14 @@ def get_similarities(
         [(name.split(":"))[0] for name in onto_graph.get_node_names()]
     )
 
-    if len(all_extra_prefixes) > 0:
-        print("Also traversing nodes with these prefixes: ")
+    print("Also traversing nodes with these prefixes: ")
+    new_prefixes = 0
     for prefix in all_extra_prefixes:
         if prefix in all_node_prefixes and prefix not in focus_prefixes:
             traversal_prefixes.append(f"{prefix}:")
-            print(prefix)
+            new_prefixes = new_prefixes + 1
+    if new_prefixes == 0:
+        print("(None, just the input prefixes.)")
 
     onto_graph = onto_graph.filter_from_names(
         edge_type_names_to_keep=[predicate],
