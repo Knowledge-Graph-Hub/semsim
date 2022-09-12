@@ -54,10 +54,7 @@ def compute_pairwise_sims(
                 destination_node_prefixes=prefixes,
                 minimum_similarity=cutoff,
                 return_similarities_dataframe=True,
-            )
-
-        print(rs_df['source'].memory_usage(deep=True) / 1e6)
-        print(rs_df['source'].astype('category').memory_usage(deep=True) / 1e6)
+            ).astype("category", copy=False)
 
         print("Computing Jaccard...")
         rs_df["jaccard"] = dag.get_ancestors_jaccard_from_node_names(
@@ -66,13 +63,16 @@ def compute_pairwise_sims(
                 compute_predecessors=True,
             ),
             list(rs_df["source"]),
-            list(rs_df["destination"])
+            list(rs_df["destination"]),
         )
 
-        rs_df.sort_values(by=["similarity"], ascending=False, inplace=True)
-
         print(f"Writing output to {rs_path}...")
+        rs_df.sort_values(
+            by=["similarity"], ascending=False, inplace=True
+        )
+
         rs_df.to_csv(rs_path, index=False)
+
         success = True
     except ValueError as e:
         print(e)
