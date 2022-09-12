@@ -14,7 +14,7 @@ def compute_pairwise_sims(
     cutoff: float,
     prefixes: list,
     path: str,
-) -> list:
+) -> bool:
     """Compute and store pairwise Resnik and Jaccard similarities.
 
     Parameters
@@ -30,16 +30,16 @@ def compute_pairwise_sims(
     prefixes: list
         Nodes with one of these prefixes will be compared for similarity.
         If not provided, the comparison will be all vs. all on the DAG.
-    return: list
-        The list of paths where files were written
+    return: bool
+        True if successful
     """
-    print(f"Calculating Resnik scores for {', '.join(prefixes)}...")
+    print(
+        f"Calculating Resnik and Jaccard scores for {', '.join(prefixes)}..."
+    )
 
     dag_name = dag.get_name()
     outpath = pathlib.Path.cwd() / path
     rs_path = outpath / f"{dag_name}_resnik"
-    js_path = outpath / f"{dag_name}_jaccard"
-    paths = [rs_path, js_path]
 
     resnik_model = DAGResnik()
     resnik_model.fit(dag, node_counts=counts)
@@ -65,12 +65,14 @@ def compute_pairwise_sims(
 
         rs_df.sort_values(by=["similarity"], ascending=False, inplace=True)
 
-        print("Writing output...")
+        print(f"Writing output to {rs_path}...")
         rs_df.to_csv(rs_path, index=False)
+        success = True
     except ValueError as e:
         print(e)
+        success = False
 
-    return paths
+    return success
 
 
 def compute_pairwise_ancestors_jaccard(dag: Graph, path: str) -> str:
