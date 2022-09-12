@@ -39,7 +39,7 @@ def compute_pairwise_sims(
 
     dag_name = dag.get_name()
     outpath = pathlib.Path.cwd() / path
-    rs_path = outpath / f"{dag_name}_resnik"
+    rs_path = outpath / f"{dag_name}_similarities"
 
     resnik_model = DAGResnik()
     resnik_model.fit(dag, node_counts=counts)
@@ -47,6 +47,7 @@ def compute_pairwise_sims(
     # Get all similarities,
     # based on the provided prefixes and cutoff.
     try:
+        print("Computing Resnik...")
         rs_df = resnik_model. \
             get_similarities_from_bipartite_graph_from_edge_node_prefixes(
                 source_node_prefixes=prefixes,
@@ -55,12 +56,17 @@ def compute_pairwise_sims(
                 return_similarities_dataframe=True,
             )
 
-        bfs = dag.get_breadth_first_search_from_node_names(
-            src_node_name=dag.get_root_node_names()[0],
-            compute_predecessors=True,
-        )
+        print(rs_df['source'].memory_usage(deep=True) / 1e6)
+        print(rs_df['source'].astype('category').memory_usage(deep=True) / 1e6)
+
+        print("Computing Jaccard...")
         rs_df["jaccard"] = dag.get_ancestors_jaccard_from_node_names(
-            bfs, list(rs_df["source"]), list(rs_df["destination"])
+            dag.get_breadth_first_search_from_node_names(
+                src_node_name=dag.get_root_node_names()[0],
+                compute_predecessors=True,
+            ),
+            list(rs_df["source"]),
+            list(rs_df["destination"])
         )
 
         rs_df.sort_values(by=["similarity"], ascending=False, inplace=True)
