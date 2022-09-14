@@ -47,6 +47,7 @@ def compute_pairwise_sims(
     # Get all similarities,
     # based on the provided prefixes and cutoff.
     try:
+
         print("Computing Resnik...")
         rs_df = resnik_model. \
             get_similarities_from_bipartite_graph_from_edge_node_prefixes(
@@ -54,7 +55,9 @@ def compute_pairwise_sims(
                 destination_node_prefixes=prefixes,
                 minimum_similarity=cutoff,
                 return_similarities_dataframe=True,
-            ).astype("category", copy=False)
+            ).astype("category", copy=True)
+
+        # print(rs_df['source'].memory_usage(deep=True) / 1e6)
 
         print("Computing Jaccard...")
         rs_df["jaccard"] = dag.get_ancestors_jaccard_from_node_names(
