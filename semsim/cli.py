@@ -77,14 +77,65 @@ def sim(
         annot_file=annot_file,
         annot_col=annot_col,
         output_dir=output_dir,
-        prefixes=prefixes,
+        nodes=prefixes,
         predicate=predicate,
+        subset=False,
     ):
         print(f"Wrote to {output_dir}.")
     else:
         print(f"Semantic similarity calculation failed for {ontology}.")
 
     return None
+
+
+@main.command()
+@click.option(
+    "--participants",
+    "-p",
+    callback=lambda _, __, x: x.split(",") if x else [],
+    required=True,
+)
+@click.option(
+    "--predicate", "-r", required=True, default="biolink:subclass_of"
+)
+@click.argument("ontology", default=None)
+def somesim(
+    ontology: str,
+    participants: list,
+    predicate: str,
+) -> None:
+    """Return the semantic similarity for a single pair of classes.
+
+    Output will be a tuple of (Resnik, Jaccard).
+
+    :param ontology: An OBO Foundry ontology on which to compute sem sim
+    (e.g., HP)
+    :param participants: No fewer than two classes/nodes to return
+    similarity scores for, comma-delimited, e.g., HP:0500167,MP:0004731
+    :param predicate: A predicate type to filter on.
+    Defaults to biolink:subclass_of.
+    :return: None
+    """
+    print(f"Input graph is {ontology}.")
+    print(f"Filtering to {predicate}.")
+
+    # get ontology, make into DAG
+    # make counts (Dict[curie, count])
+    # call compute pairwise similarity
+    # write out
+    sims = get_similarities(
+        ontology=ontology,
+        cutoff=0,
+        annot_file=None,
+        annot_col=None,
+        output_dir=None,
+        nodes=participants,
+        predicate=predicate,
+        subset=True,
+    )
+
+    print(sims)
+    return sims
 
 
 @main.command()
