@@ -117,7 +117,15 @@ def compute_subset_sims(
 
     for pair in all_pairs:
         rs = resnik_model.get_similarity_from_node_name(pair[0], pair[1])
-        all_sims[pair] = (rs)
+        js = dag.get_ancestors_jaccard_from_node_names(
+            dag.get_breadth_first_search_from_node_names(
+                src_node_name=dag.get_root_node_names()[0],
+                compute_predecessors=True,
+            ),
+            [pair[0]],
+            [pair[1]],
+        )
+        all_sims[pair] = (rs, float(js))
 
     return all_sims
 
