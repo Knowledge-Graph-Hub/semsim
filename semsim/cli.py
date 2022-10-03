@@ -103,10 +103,10 @@ def somesim(
     ontology: str,
     participants: list,
     predicate: str,
-) -> None:
-    """Return the semantic similarity for a single pair of classes.
+) -> dict:
+    """Return the semantic similarity for a list of nodes.
 
-    Output will be a tuple of (Resnik, Jaccard).
+    Output will be a dict of tuples, with each pair as a key.
 
     :param ontology: An OBO Foundry ontology on which to compute sem sim
     (e.g., HP)
@@ -114,7 +114,9 @@ def somesim(
     similarity scores for, comma-delimited, e.g., HP:0500167,MP:0004731
     :param predicate: A predicate type to filter on.
     Defaults to biolink:subclass_of.
-    :return: None
+    :return: dict of tuples, with the IDs
+    of each pair as the key and a tuple of (Resnik, Jaccard)
+    as value.
     """
     print(f"Input graph is {ontology}.")
     print(f"Filtering to {predicate}.")

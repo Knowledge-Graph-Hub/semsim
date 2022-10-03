@@ -84,6 +84,25 @@ def compute_pairwise_sims(
     return success
 
 
+def compute_subset_sims(
+    dag: Graph,
+    nodes: list,
+) -> dict:
+    """Compute Resnik and Jaccard similarities for a given list of nodes.
+
+    Parameters
+    -------------------
+    dag: Graph
+        The DAG to use to compute the Resnik and Jaccard similarities.
+    nodes: list
+        Nodes to be will be compared for similarity.
+    return: dict
+    """
+    print(
+        f"Calculating Resnik and Jaccard scores for {', '.join(nodes)}..."
+    )
+
+
 def compute_pairwise_ancestors_jaccard(dag: Graph, path: str) -> str:
     """Compute and store pairwise Ancestors Jaccard of graph.
 

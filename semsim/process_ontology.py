@@ -2,10 +2,12 @@
 import sys
 import warnings
 from collections import Counter
+from typing import Union
 
 import pandas as pd
 
 from .compute_pairwise_similarities import compute_pairwise_sims
+from .compute_pairwise_similarities import compute_subset_sims
 from .extra_prefixes import PREFIXES
 
 GRAPE_DATA_MOD = "grape.datasets.kgobo"
@@ -17,29 +19,39 @@ def get_similarities(
     annot_file: str,
     annot_col: str,
     output_dir: str,
-    prefixes: list,
+    nodes: list,
     predicate: str,
-) -> bool:
+    subset: bool
+) -> Union[bool, dict]:
     """Compute and store similarities to the provided paths.
 
     :param ontology: str, name of ontology to retrieve and process.
     :param output_dir: str, where to store the pairwise similarities.
-    :param prefixes: list of prefixes, without colons, to keep the
-    corresponding nodes for
-    :return: True if successful
+    :param nodes: list of prefixes, without colons, to keep the
+    corresponding nodes for, OR a list of no fewer than two nodes
+    to find similarity between
+    :param predicate: str, predicate type to filter to
+    :param subset: bool, if True, process to prepare single
+    pair of similarities only
+    :return: True if successful and not working on a subset.
+    Otherwise returns a dict of tuples, with the IDs
+    of each pair as the key and a tuple of (Resnik, Jaccard)
+    as value.
     """
     success = True
 
     onto_graph_class = import_grape_class(ontology)
 
-    focus_prefixes = [prefix for prefix in prefixes]
+    if not subset:
+        focus_prefixes = [prefix for prefix in nodes]
 
-    # Some prefixes are helpful for traversing the graph,
-    # but don't need to be included in the final simlarities.
-    all_extra_prefixes = PREFIXES
-    traversal_prefixes = [f"{prefix}:" for prefix in prefixes]
+        # Some prefixes are helpful for traversing the graph,
+        # but don't need to be included in the final simlarities.
+        all_extra_prefixes = PREFIXES
+        traversal_prefixes = [f"{prefix}:" for prefix in nodes]
 
-    print(f"Comparing nodes with these prefixes: {' '.join(focus_prefixes)}")
+        print("Comparing nodes with these prefixes: "
+              f" {' '.join(focus_prefixes)}")
 
     onto_graph = (
         onto_graph_class(directed=True)
@@ -47,23 +59,24 @@ def get_similarities(
         .to_transposed()
     )
 
-    all_node_prefixes = set(
-        [(name.split(":"))[0] for name in onto_graph.get_node_names()]
-    )
+    if not subset:
+        all_node_prefixes = set(
+            [(name.split(":"))[0] for name in onto_graph.get_node_names()]
+        )
 
-    print("Also traversing nodes with these prefixes: ")
-    new_prefixes = 0
-    for prefix in all_extra_prefixes:
-        if prefix in all_node_prefixes and prefix not in focus_prefixes:
-            traversal_prefixes.append(f"{prefix}:")
-            new_prefixes = new_prefixes + 1
-    if new_prefixes == 0:
-        print("(None, just the input prefixes.)")
+        print("Also traversing nodes with these prefixes: ")
+        new_prefixes = 0
+        for prefix in all_extra_prefixes:
+            if prefix in all_node_prefixes and prefix not in focus_prefixes:
+                traversal_prefixes.append(f"{prefix}:")
+                new_prefixes = new_prefixes + 1
+        if new_prefixes == 0:
+            print("(None, just the input prefixes.)")
 
-    onto_graph = onto_graph.filter_from_names(
-        edge_type_names_to_keep=[predicate],
-        node_prefixes_to_keep=traversal_prefixes,
-    )
+        onto_graph = onto_graph.filter_from_names(
+            edge_type_names_to_keep=[predicate],
+            node_prefixes_to_keep=traversal_prefixes,
+        )
 
     try:
         onto_graph.must_be_connected()
@@ -109,17 +122,23 @@ def get_similarities(
             )
         )
 
-    if not compute_pairwise_sims(
-        dag=onto_graph,
-        counts=counts,
-        cutoff=cutoff,
-        path=output_dir,
-        prefixes=focus_prefixes,
-    ):
-        print("Similarity computation failed.")
-        success = False
+    if not subset:
+        if not compute_pairwise_sims(
+            dag=onto_graph,
+            counts=counts,
+            cutoff=cutoff,
+            path=output_dir,
+            prefixes=focus_prefixes,
+        ):
+            print("Similarity computation failed.")
+            success = False
 
-    return success
+        return success
+    else:
+        compute_subset_sims(
+            dag=onto_graph,
+            nodes=nodes,
+        )
 
 
 def import_grape_class(name) -> object:
