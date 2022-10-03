@@ -34,9 +34,8 @@ def get_similarities(
     :param subset: bool, if True, process to prepare single
     pair of similarities only
     :return: True if successful and not working on a subset.
-    Otherwise returns a dict of tuples, with the IDs
-    of each pair as the key and a tuple of (Resnik, Jaccard)
-    as value.
+    Otherwise returns a dict of tuples, with the IDs of each pair
+    (a tuple) as the key and a tuple of (Resnik, Jaccard) as value.
     """
     success = True
 
@@ -135,10 +134,12 @@ def get_similarities(
 
         return success
     else:
-        compute_subset_sims(
+        sims = compute_subset_sims(
             dag=onto_graph,
+            counts=counts,
             nodes=nodes,
         )
+        return sims
 
 
 def import_grape_class(name) -> object:

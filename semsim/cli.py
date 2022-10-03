@@ -114,9 +114,8 @@ def somesim(
     similarity scores for, comma-delimited, e.g., HP:0500167,MP:0004731
     :param predicate: A predicate type to filter on.
     Defaults to biolink:subclass_of.
-    :return: dict of tuples, with the IDs
-    of each pair as the key and a tuple of (Resnik, Jaccard)
-    as value.
+    :return: dict of tuples, with the IDs of each pair (a tuple) as
+    the key and a tuple of (Resnik, Jaccard) as value.
     """
     print(f"Input graph is {ontology}.")
     print(f"Filtering to {predicate}.")
