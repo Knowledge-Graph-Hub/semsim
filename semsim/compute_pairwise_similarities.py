@@ -50,12 +50,11 @@ def compute_pairwise_sims(
 
         print("Computing Resnik...")
         rs_df = resnik_model. \
-            get_similarities_from_bipartite_graph_node_prefixes(
-                source_node_prefixes=prefixes,
-                destination_node_prefixes=prefixes,
+            get_similarities_from_clique_graph_node_prefixes(
+                node_prefixes=prefixes,
                 minimum_similarity=cutoff,
                 return_similarities_dataframe=True,
-            ).astype("category", copy=True)
+            )
 
         print("Computing Jaccard...")
         rs_df["jaccard"] = dag.get_ancestors_jaccard_from_node_ids(
@@ -68,10 +67,8 @@ def compute_pairwise_sims(
         )
 
         # Remap node IDs to node names
-        node_map = dag.get_nodes_mapping()
-        id_map = {v: k for k, v in node_map.items()}
         for col in ['source', 'destination']:
-            rs_df = rs_df.replace({col: id_map})
+            rs_df[col] = dag.get_node_names_from_node_ids(rs_df[col])
 
         print(f"Writing output to {rs_path}...")
         rs_df.sort_values(
