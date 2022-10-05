@@ -58,8 +58,8 @@ def compute_pairwise_sims(
 
         print("Computing Jaccard...")
         rs_df["jaccard"] = dag.get_ancestors_jaccard_from_node_ids(
-            dag.get_breadth_first_search_from_node_names(
-                src_node_name=dag.get_root_node_names()[0],
+            dag.get_breadth_first_search_from_node_ids(
+                src_node_id=dag.get_root_node_ids()[0],
                 compute_predecessors=True,
             ),
             list(rs_df["source"]),
@@ -67,6 +67,7 @@ def compute_pairwise_sims(
         )
 
         # Remap node IDs to node names
+        print("Retrieving node names...")
         for col in ['source', 'destination']:
             rs_df[col] = dag.get_node_names_from_node_ids(rs_df[col])
 
