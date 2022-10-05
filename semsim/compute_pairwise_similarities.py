@@ -50,17 +50,15 @@ def compute_pairwise_sims(
 
         print("Computing Resnik...")
         rs_df = resnik_model. \
-            get_similarities_from_bipartite_graph_from_edge_node_prefixes(
+            get_similarities_from_bipartite_graph_node_prefixes(
                 source_node_prefixes=prefixes,
                 destination_node_prefixes=prefixes,
                 minimum_similarity=cutoff,
                 return_similarities_dataframe=True,
             ).astype("category", copy=True)
 
-        # print(rs_df['source'].memory_usage(deep=True) / 1e6)
-
         print("Computing Jaccard...")
-        rs_df["jaccard"] = dag.get_ancestors_jaccard_from_node_names(
+        rs_df["jaccard"] = dag.get_ancestors_jaccard_from_node_ids(
             dag.get_breadth_first_search_from_node_names(
                 src_node_name=dag.get_root_node_names()[0],
                 compute_predecessors=True,
@@ -69,9 +67,15 @@ def compute_pairwise_sims(
             list(rs_df["destination"]),
         )
 
+        # Remap node IDs to node names
+        node_map = dag.get_nodes_mapping()
+        id_map = {v: k for k, v in node_map.items()}
+        for col in ['source', 'destination']:
+            rs_df = rs_df.replace({col: id_map})
+
         print(f"Writing output to {rs_path}...")
         rs_df.sort_values(
-            by=["similarity"], ascending=False, inplace=True
+            by=["resnik_score"], ascending=False, inplace=True
         )
 
         rs_df.to_csv(rs_path, index=False)
