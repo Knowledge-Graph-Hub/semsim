@@ -14,6 +14,7 @@ def compute_pairwise_sims(
     cutoff: float,
     prefixes: list,
     path: str,
+    root_node: str,
 ) -> bool:
     """Compute and store pairwise Resnik and Jaccard similarities.
 
@@ -29,7 +30,8 @@ def compute_pairwise_sims(
         Pairs with Resnik similarity below this value will not be retained.
     prefixes: list
         Nodes with one of these prefixes will be compared for similarity.
-        If not provided, the comparison will be all vs. all on the DAG.
+    root_node: str
+        Name of a root node to specify for Jaccard comparisons.
     return: bool
         True if successful
     """
@@ -57,9 +59,13 @@ def compute_pairwise_sims(
             )
 
         print("Computing Jaccard...")
+        if root_node != "":
+            root_select = dag.get_node_id_from_node_name(root_node)
+        else:
+            root_select = dag.get_root_node_ids()[0]
         rs_df["jaccard"] = dag.get_ancestors_jaccard_from_node_ids(
             dag.get_breadth_first_search_from_node_ids(
-                src_node_id=dag.get_root_node_ids()[0],
+                src_node_id=root_select,
                 compute_predecessors=True,
             ),
             list(rs_df["source"]),

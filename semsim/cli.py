@@ -27,6 +27,9 @@ def main():
 @click.option(
     "--predicate", "-r", required=True, default="biolink:subclass_of"
 )
+@click.option(
+    "--root_node", "-n", required=True, default=""
+)
 @click.argument("ontology", default=None)
 def sim(
     ontology: str,
@@ -36,6 +39,7 @@ def sim(
     output_dir: str,
     prefixes: list,
     predicate: str,
+    root_node: str,
 ) -> None:
     """Generate a file containing the semantic similarity.
 
@@ -52,6 +56,8 @@ def sim(
     similarity scores for, comma-delimited, e.g., HP,MP,UPHENO
     :param predicate: A predicate type to filter on.
     Defaults to biolink:subclass_of.
+    :param root_node: specify the name of a node to use as root,
+    specifically for Jaccard calculations.
     :return: None
     """
     print(f"Input graph is {ontology}.")
@@ -79,6 +85,7 @@ def sim(
         output_dir=output_dir,
         prefixes=prefixes,
         predicate=predicate,
+        root_node=root_node,
     ):
         print(f"Wrote to {output_dir}.")
     else:

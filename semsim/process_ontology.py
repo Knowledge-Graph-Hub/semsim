@@ -19,6 +19,7 @@ def get_similarities(
     output_dir: str,
     prefixes: list,
     predicate: str,
+    root_node: str,
 ) -> bool:
     """Compute and store similarities to the provided paths.
 
@@ -26,6 +27,9 @@ def get_similarities(
     :param output_dir: str, where to store the pairwise similarities.
     :param prefixes: list of prefixes, without colons, to keep the
     corresponding nodes for
+    :param predicate: find similarities using this predicate type only
+    :param root_node: specify the name of a node to use as root,
+    specifically for Jaccard calculations
     :return: True if successful
     """
     success = True
@@ -115,6 +119,7 @@ def get_similarities(
         cutoff=cutoff,
         path=output_dir,
         prefixes=focus_prefixes,
+        root_node=root_node,
     ):
         print("Similarity computation failed.")
         success = False
