@@ -5,8 +5,7 @@ from unittest import TestCase
 
 from grape import Graph
 
-from semsim.compute_pairwise_similarities import (  # noqa
-    compute_pairwise_ancestors_jaccard, compute_pairwise_resnik)
+from semsim.compute_pairwise_similarities import compute_pairwise_sims
 
 
 class TestComputePairwiseSimilarities(TestCase):
@@ -16,8 +15,7 @@ class TestComputePairwiseSimilarities(TestCase):
         """Set up."""
         self.test_graph_path_nodes = "tests/resources/test_hpo_nodes.tsv"
         self.test_graph_path_edges = "tests/resources/test_hpo_edges.tsv"
-        self.resnik_outpath = "tests/output/resnik_out"
-        self.jaccard_outpath = "tests/output/jaccard_out"
+        self.resnik_outpath = "tests/output/Graph_similarities"
         self.test_graph = Graph.from_csv(
             directed=True,
             node_path=self.test_graph_path_nodes,
@@ -74,18 +72,14 @@ class TestComputePairwiseSimilarities(TestCase):
                 break
         self.assertTrue(check)
 
-    def test_compute_pairwise_resnik(self) -> None:
-        """Test pairwise Resnik computation."""
-        compute_pairwise_resnik(
+    def test_compute_pairwise_sims(self) -> None:
+        """Test pairwise Resnik and Jaccard computation."""
+        compute_pairwise_sims(
             dag=self.test_graph,
             counts=self.test_counts,
-            path=self.resnik_outpath,
+            cutoff=2.5,
+            path="tests/output/",
+            prefixes=["HP", "MP"],
+            root_node="",
         )
         self.assertTrue(os.path.exists(self.resnik_outpath))
-
-    def test_compute_pairwise_ancestors_jaccard(self) -> None:
-        """Test pairwise Jaccard computation."""
-        compute_pairwise_ancestors_jaccard(
-            dag=self.test_graph, path=self.jaccard_outpath
-        )
-        self.assertTrue(os.path.exists(self.jaccard_outpath))
