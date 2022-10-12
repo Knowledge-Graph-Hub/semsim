@@ -22,7 +22,7 @@ def main():
     "--prefixes",
     "-p",
     callback=lambda _, __, x: x.split(",") if x else [],
-    required=True,
+    required=False,
 )
 @click.option(
     "--predicate", "-r", required=True, default="biolink:subclass_of"
@@ -53,7 +53,7 @@ def sim(
     frequencies for Resnik calculation
     :param annot_col: name of column in annotation file containing onto IDs
     :param prefixes: One or more node types to calculate
-    similarity scores for, comma-delimited, e.g., HP,MP,UPHENO
+    similarity scores for, comma-delimited, e.g., HP,MP
     :param predicate: A predicate type to filter on.
     Defaults to biolink:subclass_of.
     :param root_node: specify the name of a node to use as root,
@@ -72,6 +72,9 @@ def sim(
         )
 
     cutoff = float(cutoff)
+
+    if not prefixes:
+        prefixes = [ontology]
 
     # get ontology, make into DAG
     # make counts (Dict[curie, count])
