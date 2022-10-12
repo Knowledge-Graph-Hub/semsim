@@ -5,6 +5,7 @@ from typing import Dict
 
 import pandas as pd
 from grape import Graph
+
 from grape.similarities import DAGResnik
 
 
@@ -46,6 +47,20 @@ def compute_pairwise_sims(
     resnik_model = DAGResnik()
     resnik_model.fit(dag, node_counts=counts)
 
+    if root_node != "":
+        root_select = [dag.get_node_id_from_node_name(root_node)]
+        print(f"Will use single root as specified: {root_node}")
+    else:
+        all_roots = dag.get_root_node_ids()
+        if len(all_roots) == 1:
+            root_select = [dag.get_root_node_ids()[0]]
+            root_name = dag.get_node_name_from_node_id(root_select[0])
+            print(f"Found single root: {root_name}")
+        else:
+            root_select = dag.get_root_node_ids()
+            root_names = dag.get_node_names_from_node_ids(root_select)
+            print(f"Found multiple roots: {root_names}")
+
     # Get all similarities,
     # based on the provided prefixes and cutoff.
     try:
@@ -59,18 +74,24 @@ def compute_pairwise_sims(
             )
 
         print("Computing Jaccard...")
-        if root_node != "":
-            root_select = dag.get_node_id_from_node_name(root_node)
-        else:
-            root_select = dag.get_root_node_ids()[0]
-        rs_df["jaccard"] = dag.get_ancestors_jaccard_from_node_ids(
-            dag.get_breadth_first_search_from_node_ids(
-                src_node_id=root_select,
-                compute_predecessors=True,
-            ),
-            list(rs_df["source"]),
-            list(rs_df["destination"]),
-        )
+        for root in root_select:
+            root_name = dag.get_node_name_from_node_id(root)
+            if len(root_select) == 1:
+                jaccard_name = "jaccard"
+            else:
+                jaccard_name = f"jaccard_{root_name}"
+            rs_df[jaccard_name] = \
+                dag.get_ancestors_jaccard_from_node_ids(
+                    dag.get_breadth_first_search_from_node_ids(
+                        src_node_id=root,
+                        compute_predecessors=True,
+                    ),
+                list(rs_df["source"]),
+                list(rs_df["destination"]),
+            )
+
+        # TODO: if multiple sets of jaccards, get max for each
+        # and set as overall jaccard
 
         # Remap node IDs to node names
         print("Retrieving node names...")
