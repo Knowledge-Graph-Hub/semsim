@@ -21,6 +21,7 @@ def get_similarities(
     output_dir: str,
     nodes: list,
     predicate: str,
+    root_node: str,
     subset: bool
 ) -> Union[bool, dict]:
     """Compute and store similarities to the provided paths.
@@ -31,11 +32,16 @@ def get_similarities(
     corresponding nodes for, OR a list of no fewer than two nodes
     to find similarity between
     :param predicate: str, predicate type to filter to
+    :param root_node: specify the name of a node to use as root,
+    specifically for Jaccard calculations
     :param subset: bool, if True, process to prepare single
     pair of similarities only
     :return: True if successful and not working on a subset.
     Otherwise returns a dict of tuples, with the IDs of each pair
     (a tuple) as the key and a tuple of (Resnik, Jaccard) as value.
+    :param prefixes: list of prefixes, without colons, to keep the
+    corresponding nodes for
+
     """
     success = True
 
@@ -84,8 +90,8 @@ def get_similarities(
         num_comps = comps[0]
         max_comp = comps[2]
         warnings.warn(
-            "Graph is not fully connected. Will ignore"
-            " all but the largest component."
+            "Graph contains multiple disconnected components."
+            " Will ignore all but the largest component."
             f" {num_comps} components are present."
             f" Largest component has {max_comp} nodes."
         )
@@ -128,6 +134,7 @@ def get_similarities(
             cutoff=cutoff,
             path=output_dir,
             prefixes=focus_prefixes,
+            root_node=root_node,
         ):
             print("Similarity computation failed.")
             success = False
