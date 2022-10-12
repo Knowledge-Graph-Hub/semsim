@@ -90,7 +90,6 @@ def sim(
         predicate=predicate,
         root_node=root_node,
         subset=False,
-        root_node=root_node,
     ):
         print(f"Wrote to {output_dir}.")
     else:
