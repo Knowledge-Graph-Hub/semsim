@@ -76,7 +76,7 @@ def get_similarities(
         num_comps = comps[0]
         max_comp = comps[2]
         warnings.warn(
-            "Graph contains multiple disconnected components." 
+            "Graph contains multiple disconnected components."
             " Will ignore all but the largest component."
             f" {num_comps} components are present."
             f" Largest component has {max_comp} nodes."
