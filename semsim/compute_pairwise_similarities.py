@@ -74,12 +74,14 @@ def compute_pairwise_sims(
             )
 
         print("Computing Jaccard...")
+        all_jaccard_names = []
         for root in root_select:
             root_name = dag.get_node_name_from_node_id(root)
             if len(root_select) == 1:
                 jaccard_name = "jaccard"
             else:
                 jaccard_name = f"jaccard_{root_name}"
+                all_jaccard_names.append(jaccard_name)
             rs_df[jaccard_name] = \
                 dag.get_ancestors_jaccard_from_node_ids(
                     dag.get_breadth_first_search_from_node_ids(
@@ -90,8 +92,9 @@ def compute_pairwise_sims(
                 list(rs_df["destination"]),
             )
 
-        # TODO: if multiple sets of jaccards, get max for each
-        # and set as overall jaccard
+        if len(root_select) > 1:
+            print("Determining maximum Jaccard similarity...")
+            rs_df["jaccard"] = rs_df[all_jaccard_names].max(axis=1)
 
         # Remap node IDs to node names
         print("Retrieving node names...")
