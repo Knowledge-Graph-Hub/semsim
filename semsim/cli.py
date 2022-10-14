@@ -22,10 +22,13 @@ def main():
     "--prefixes",
     "-p",
     callback=lambda _, __, x: x.split(",") if x else [],
-    required=True,
+    required=False,
 )
 @click.option(
     "--predicate", "-r", required=True, default="biolink:subclass_of"
+)
+@click.option(
+    "--root_node", "-n", required=True, default=""
 )
 @click.argument("ontology", default=None)
 def sim(
@@ -36,6 +39,7 @@ def sim(
     output_dir: str,
     prefixes: list,
     predicate: str,
+    root_node: str,
 ) -> None:
     """Generate a file containing the semantic similarity.
 
@@ -49,9 +53,11 @@ def sim(
     frequencies for Resnik calculation
     :param annot_col: name of column in annotation file containing onto IDs
     :param prefixes: One or more node types to calculate
-    similarity scores for, comma-delimited, e.g., HP,MP,UPHENO
+    similarity scores for, comma-delimited, e.g., HP,MP
     :param predicate: A predicate type to filter on.
     Defaults to biolink:subclass_of.
+    :param root_node: specify the name of a node to use as root,
+    specifically for Jaccard calculations.
     :return: None
     """
     print(f"Input graph is {ontology}.")
@@ -67,6 +73,9 @@ def sim(
 
     cutoff = float(cutoff)
 
+    if not prefixes:
+        prefixes = [ontology]
+
     # get ontology, make into DAG
     # make counts (Dict[curie, count])
     # call compute pairwise similarity
@@ -79,6 +88,7 @@ def sim(
         output_dir=output_dir,
         prefixes=prefixes,
         predicate=predicate,
+        root_node=root_node,
     ):
         print(f"Wrote to {output_dir}.")
     else:

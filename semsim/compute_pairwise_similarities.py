@@ -14,6 +14,7 @@ def compute_pairwise_sims(
     cutoff: float,
     prefixes: list,
     path: str,
+    root_node: str,
 ) -> bool:
     """Compute and store pairwise Resnik and Jaccard similarities.
 
@@ -29,7 +30,8 @@ def compute_pairwise_sims(
         Pairs with Resnik similarity below this value will not be retained.
     prefixes: list
         Nodes with one of these prefixes will be compared for similarity.
-        If not provided, the comparison will be all vs. all on the DAG.
+    root_node: str
+        Name of a root node to specify for Jaccard comparisons.
     return: bool
         True if successful
     """
@@ -44,34 +46,63 @@ def compute_pairwise_sims(
     resnik_model = DAGResnik()
     resnik_model.fit(dag, node_counts=counts)
 
+    if root_node != "":
+        root_select = [dag.get_node_id_from_node_name(root_node)]
+        print(f"Will use single root as specified: {root_node}")
+    else:
+        all_roots = dag.get_root_node_ids()
+        if len(all_roots) == 1:
+            root_select = [dag.get_root_node_ids()[0]]
+            root_name = dag.get_node_name_from_node_id(root_select[0])
+            print(f"Found single root: {root_name}")
+        else:
+            root_select = dag.get_root_node_ids()
+            root_names = dag.get_node_names_from_node_ids(root_select)
+            print(f"Found multiple roots: {root_names}")
+
     # Get all similarities,
     # based on the provided prefixes and cutoff.
     try:
 
         print("Computing Resnik...")
         rs_df = resnik_model. \
-            get_similarities_from_bipartite_graph_from_edge_node_prefixes(
-                source_node_prefixes=prefixes,
-                destination_node_prefixes=prefixes,
+            get_similarities_from_clique_graph_node_prefixes(
+                node_prefixes=prefixes,
                 minimum_similarity=cutoff,
                 return_similarities_dataframe=True,
-            ).astype("category", copy=True)
-
-        # print(rs_df['source'].memory_usage(deep=True) / 1e6)
+            )
 
         print("Computing Jaccard...")
-        rs_df["jaccard"] = dag.get_ancestors_jaccard_from_node_names(
-            dag.get_breadth_first_search_from_node_names(
-                src_node_name=dag.get_root_node_names()[0],
-                compute_predecessors=True,
-            ),
-            list(rs_df["source"]),
-            list(rs_df["destination"]),
-        )
+        all_jaccard_names = []
+        for root in root_select:
+            root_name = dag.get_node_name_from_node_id(root)
+            if len(root_select) == 1:
+                jaccard_name = "jaccard"
+            else:
+                jaccard_name = f"jaccard_{root_name}"
+                all_jaccard_names.append(jaccard_name)
+            rs_df[jaccard_name] = \
+                dag.get_ancestors_jaccard_from_node_ids(
+                    dag.get_breadth_first_search_from_node_ids(
+                        src_node_id=root,
+                        compute_predecessors=True,
+                    ),
+                list(rs_df["source"]),
+                list(rs_df["destination"]),
+            )
+
+        if len(root_select) > 1:
+            print("Determining maximum Jaccard similarity...")
+            rs_df["jaccard"] = rs_df[all_jaccard_names].max(axis=1)
+
+        # Remap node IDs to node names
+        print("Retrieving node names...")
+        for col in ['source', 'destination']:
+            rs_df[col] = dag.get_node_names_from_node_ids(rs_df[col])
 
         print(f"Writing output to {rs_path}...")
         rs_df.sort_values(
-            by=["similarity"], ascending=False, inplace=True
+            by=["resnik_score"], ascending=False, inplace=True
         )
 
         rs_df.to_csv(rs_path, index=False)
