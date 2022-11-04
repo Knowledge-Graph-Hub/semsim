@@ -16,7 +16,9 @@ pipeline {
         // used solely for invalidations
         AWS_CLOUDFRONT_DISTRIBUTION_ID = 'EUVSWXZQBXCFP'
 
-        MERGEDNAME_BASE = "kgphenio_hp-vs-mp_semsim"
+        CUTOFF_VALUE = "5"
+        MERGEDNAME_BASE = 'kgphenio_hp-vs-mp_semsim_$CUTOFF_VALUE'
+
     }
     options {
         timestamps()
@@ -76,8 +78,8 @@ pipeline {
         stage('Download ontology and run similarity measurement') {
             steps {
                 dir('./gitrepo') {
-		            sh '. venv/bin/activate && env && semsim sim KGPhenio -p HP,MP -c 5'
-                    sh 'cd data/ && tar -czvf similarities.tar.gz KGPhenio_similarities.tsv && cd ..'
+		            sh '. venv/bin/activate && env && semsim sim KGPhenio -p HP,MP -c $CUTOFF_VALUE'
+                    sh 'tar -czvf similarities.tar.gz data/KGPhenio_similarities.tsv graphs/kghub/KGPhenio/current/*'
                 }
             }
         }
@@ -115,7 +117,7 @@ pipeline {
                                 // make $BUILDSTARTDATE/ directory and sync to s3 bucket
                                 //
                                 sh 'mkdir $BUILDSTARTDATE/'
-                                sh 'cp -p data/similarities.tar.gz $BUILDSTARTDATE/${MERGEDNAME_BASE}.tar.gz'
+                                sh 'cp -p similarities.tar.gz $BUILDSTARTDATE/${MERGEDNAME_BASE}.tar.gz'
 
                                 // build the index, then upload to remote
                                 sh '. venv/bin/activate && multi_indexer -v --directory $BUILDSTARTDATE --prefix https://kg-hub.berkeleybop.io/$S3PROJECTDIR/$BUILDSTARTDATE -x -u'
