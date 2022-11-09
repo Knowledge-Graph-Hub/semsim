@@ -78,8 +78,9 @@ pipeline {
         stage('Download ontology and run similarity measurement') {
             steps {
                 dir('./gitrepo') {
-		            sh '. venv/bin/activate && env && semsim sim KGPhenio -p HP,MP -c $CUTOFF_VALUE'
-                    sh 'tar -czvf similarities.tar.gz data/KGPhenio_similarities.tsv graphs/kghub/KGPhenio/current/*'
+                    sh 'mkdir graphs && wget https://kg-hub.berkeleybop.io/kg-phenio/current/kg-phenio.tar.gz -P graphs/'
+		            sh '. venv/bin/activate && env && semsim sim KGPhenio -p HP,MP -c $CUTOFF_VALUE -i graphs/kg-phenio.tar.gz'
+                    sh 'tar -czvf similarities.tar.gz data/KGPhenio_similarities.tsv graphs/*'
                 }
             }
         }
