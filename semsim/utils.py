@@ -2,6 +2,7 @@
 
 import os
 import tarfile
+
 from grape import Graph
 
 
@@ -12,7 +13,6 @@ def load_local_graph(name: str, infile: str) -> Graph:
     :infile: str, path to tar.gz graph file
     :return: Graph
     """
-
     # Decompress and look for node/edgelists
     infile_contents = {"Nodes": "", "Edges": ""}
     decomp_infile = tarfile.open(infile)
@@ -31,6 +31,7 @@ def load_local_graph(name: str, infile: str) -> Graph:
 
     decomp_infile.close()
 
+    # Load that graph!
     outgraph = Graph.from_csv(
         node_path=infile_contents["Nodes"],
         edge_path=infile_contents["Edges"],
