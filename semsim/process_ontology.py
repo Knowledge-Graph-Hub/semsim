@@ -7,6 +7,7 @@ import pandas as pd
 
 from .compute_pairwise_similarities import compute_pairwise_sims
 from .extra_prefixes import PREFIXES
+from .utils import load_local_graph
 
 GRAPE_DATA_MOD = "grape.datasets.kgobo"
 
@@ -20,6 +21,7 @@ def get_similarities(
     prefixes: list,
     predicate: str,
     root_node: str,
+    input_file: str = None
 ) -> bool:
     """Compute and store similarities to the provided paths.
 
@@ -34,7 +36,19 @@ def get_similarities(
     """
     success = True
 
-    onto_graph_class = import_grape_class(ontology)
+    if not input_file:
+        onto_graph_class = import_grape_class(ontology)
+        onto_graph = (
+            onto_graph_class(directed=True)
+            .remove_disconnected_nodes()
+            .to_transposed()
+        )
+    else:
+        onto_graph = (
+            load_local_graph(ontology, input_file)
+            .remove_disconnected_nodes()
+            .to_transposed()
+        )
 
     focus_prefixes = [prefix for prefix in prefixes]
 
@@ -44,12 +58,6 @@ def get_similarities(
     traversal_prefixes = [f"{prefix}:" for prefix in prefixes]
 
     print(f"Comparing nodes with these prefixes: {' '.join(focus_prefixes)}")
-
-    onto_graph = (
-        onto_graph_class(directed=True)
-        .remove_disconnected_nodes()
-        .to_transposed()
-    )
 
     all_node_prefixes = set(
         [(name.split(":"))[0] for name in onto_graph.get_node_names()]

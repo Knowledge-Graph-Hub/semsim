@@ -27,9 +27,8 @@ def main():
 @click.option(
     "--predicate", "-r", required=True, default="biolink:subclass_of"
 )
-@click.option(
-    "--root_node", "-n", required=True, default=""
-)
+@click.option("--root_node", "-n", required=True, default="")
+@click.option("--input_file", "-i", required=False)
 @click.argument("ontology", default=None)
 def sim(
     ontology: str,
@@ -40,13 +39,18 @@ def sim(
     prefixes: list,
     predicate: str,
     root_node: str,
+    input_file: str,
 ) -> None:
     """Generate a file containing the semantic similarity.
 
     (Resnik and Jaccard) for each pair of terms in an ontology
 
-    :param ontology: An OBO Foundry ontology on which to compute sem sim
-    (e.g., HP)
+    :param ontology: A graph or ontology on which to compute sem sim
+    (e.g., HP, MP, CHEBI, KGPhenio). If specifying a local file,
+    use the name of the graph for this argument and use the --input
+    argument. Otherwise, graphs names may be found through
+    the Ensmallen module (run the function
+    ensmallen.datasets.get_all_available_graphs_dataframe())
     :param cutoff: cutoff Resnik similarity in order to keep a row
     :param output_dir: Path to write file of all by all sem sim measurements
     :param annot_file: path to an annotation file, if using specific
@@ -58,9 +62,18 @@ def sim(
     Defaults to biolink:subclass_of.
     :param root_node: specify the name of a node to use as root,
     specifically for Jaccard calculations.
+    :param input_file: path to a tar.gz compressed file containing
+    KGX TSV node and edge files.
     :return: None
     """
     print(f"Input graph is {ontology}.")
+
+    if input_file:
+        if os.path.isfile(input_file):
+            print(f"Input graph file: {input_file}")
+        else:
+            raise FileNotFoundError(f"Cannot find input file: {input_file}")
+
     print(f"Filtering to {predicate}.")
 
     if not os.path.exists(output_dir):
@@ -89,6 +102,7 @@ def sim(
         prefixes=prefixes,
         predicate=predicate,
         root_node=root_node,
+        input_file=input_file,
     ):
         print(f"Wrote to {output_dir}.")
     else:
