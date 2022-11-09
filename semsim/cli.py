@@ -17,7 +17,7 @@ def main():
 @click.option("--cutoff", "-c", required=True, default=2.5)
 @click.option("--output_dir", "-o", required=False, default="data")
 @click.option("--annot_file", "-a", required=False, default=None)
-@click.option("--annot_col", "-c", required=False)
+@click.option("--annot_col", "-l", required=False)
 @click.option(
     "--prefixes",
     "-p",
