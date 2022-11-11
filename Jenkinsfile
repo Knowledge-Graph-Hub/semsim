@@ -77,18 +77,20 @@ pipeline {
         stage('Download ontology and run similarity measurement') {
             steps {
                 dir('./gitrepo') {
-                    sh 'mkdir graphs && wget https://kg-hub.berkeleybop.io/kg-phenio/current/kg-phenio.tar.gz -P graphs/'
-                    sh 'wget https://kg-hub.berkeleybop.io/kg-phenio/current/index.html' // Needed to get graph version
-		            sh '. venv/bin/activate && env && semsim sim KGPhenio -p HP,MP -c $CUTOFF_VALUE -i graphs/kg-phenio.tar.gz'
-                    sh 'tar -czvf similarities.tar.gz data/KGPhenio_similarities graphs/kg-phenio.tar.gz'
+                    script {
+                        sh 'mkdir graphs && wget https://kg-hub.berkeleybop.io/kg-phenio/current/kg-phenio.tar.gz -P graphs/'
+                        sh 'wget https://kg-hub.berkeleybop.io/kg-phenio/current/index.html' // Needed to get graph version
+                        sh '. venv/bin/activate && env && semsim sim KGPhenio -p HP,MP -c $CUTOFF_VALUE -i graphs/kg-phenio.tar.gz'
+                        sh 'tar -czvf similarities.tar.gz data/KGPhenio_similarities graphs/kg-phenio.tar.gz'
 
-                    // Set the KGBUILDDATE to the downloaded build of the graph
-                    KGBUILDDATE = sh (
-                        script: 'grep "<title>" index.html | cut -d/ -f5',
-                        returnStdout: true
-                    ).trim()
+                        // Set the KGBUILDDATE to the downloaded build of the graph
+                        KGBUILDDATE = sh (
+                            script: 'grep "<title>" index.html | cut -d/ -f5',
+                            returnStdout: true
+                        ).trim()
 
-                    sh 'rm index.html'
+                        sh 'rm index.html'
+                    }
                 }
             }
         }
