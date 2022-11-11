@@ -17,7 +17,7 @@ pipeline {
         AWS_CLOUDFRONT_DISTRIBUTION_ID = 'EUVSWXZQBXCFP'
 
         CUTOFF_VALUE = "5"
-        SEMSIM_OUT_BASE = 'kg-phenio_hp-vs-mp_semsim_$CUTOFF_VALUE'
+        SEMSIM_OUT_BASE = 'kg-phenio_hp-vs-mp_semsim_${CUTOFF_VALUE}'
 
     }
     options {
