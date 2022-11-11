@@ -9,7 +9,6 @@ pipeline {
         cron('H H 1 1-12 *')
     }
     environment {
-        KGBUILDDATE = sh(script: "echo `date +%Y%m%d`", returnStdout: true).trim()
         S3PROJECTDIR = 'kg-phenio' // no trailing slash
         // this is the source graph directory
 
@@ -88,6 +87,7 @@ pipeline {
                             script: 'grep "<title>" index.html | cut -d/ -f5',
                             returnStdout: true
                         ).trim()
+                        echo KGBUILDDATE
 
                         sh 'rm index.html'
                     }
@@ -104,6 +104,7 @@ pipeline {
                                 script: '. venv/bin/activate && s3cmd -c $S3CMD_CFG ls s3://kg-hub-public-data/$S3PROJECTDIR/$KGBUILDDATE/',
                                 returnStdout: true
                             ).trim()
+                            echo "REMOTE_BUILD_DIR_CONTENTS: '${REMOTE_BUILD_DIR_CONTENTS}'"
                         }
 
                         if (env.BRANCH_NAME != 'main') {
@@ -121,8 +122,7 @@ pipeline {
                                 sh 'mkdir $KGBUILDDATE/'
                                 sh 'cp -p similarities.tar.gz $KGBUILDDATE/${SEMSIM_OUT_BASE}.tar.gz'
 
-                                sh 's3cmd -c $S3CMD_CFG put -pr --acl-public --cf-invalidate $KGBUILDDATE/${SEMSIM_OUT_BASE}.tar.gz s3://kg-hub-public-data/$S3PROJECTDIR/${SEMSIM_OUT_BASE}.tar.gz'
-                                sh 's3cmd -c $S3CMD_CFG put -pr --acl-public --cf-invalidate $KGBUILDDATE/* s3://kg-hub-public-data/$S3PROJECTDIR/current/${SEMSIM_OUT_BASE}.tar.gz'
+                                sh 's3cmd -c $S3CMD_CFG put -pr --acl-public --cf-invalidate $KGBUILDDATE/${SEMSIM_OUT_BASE}.tar.gz s3://kg-hub-public-data/$S3PROJECTDIR/$KGBUILDDATE/${SEMSIM_OUT_BASE}.tar.gz'
 
                                 // update indices and upload
                                 sh '. venv/bin/activate && multi_indexer -v --prefix https://kg-hub.berkeleybop.io/$S3PROJECTDIR/$KGBUILDDATE/ -b kg-hub-public-data -r $S3PROJECTDIR/$KGBUILDDATE -x'
