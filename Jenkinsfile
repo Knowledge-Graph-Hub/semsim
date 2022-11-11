@@ -80,7 +80,7 @@ pipeline {
                 dir('./gitrepo') {
                     sh 'mkdir graphs && wget https://kg-hub.berkeleybop.io/kg-phenio/current/kg-phenio.tar.gz -P graphs/'
 		            sh '. venv/bin/activate && env && semsim sim KGPhenio -p HP,MP -c $CUTOFF_VALUE -i graphs/kg-phenio.tar.gz'
-                    sh 'tar -czvf similarities.tar.gz data/KGPhenio_similarities.tsv graphs/*'
+                    sh 'tar -czvf similarities.tar.gz data/KGPhenio_similarities graphs/kg-phenio.tar.gz'
                 }
             }
         }
