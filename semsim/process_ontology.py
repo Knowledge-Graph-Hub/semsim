@@ -7,7 +7,7 @@ from typing import Union
 import pandas as pd
 
 from .compute_pairwise_similarities import compute_pairwise_sims, compute_subset_sims # NOQA
-from .extra_prefixes import PREFIXES
+from .extra_prefixes import PREFIXES # NOQA
 from .utils import load_local_graph
 
 GRAPE_DATA_MOD = "grape.datasets.kgobo"
