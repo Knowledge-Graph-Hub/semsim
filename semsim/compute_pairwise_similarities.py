@@ -143,10 +143,9 @@ def compute_subset_sims(
     resnik_model = DAGResnik()
     resnik_model.fit(dag, node_counts=counts)
 
-    print("Computing Resnik...")
-
     for pair in all_pairs:
-        rs = resnik_model.get_similarity_from_node_name(pair[0], pair[1])
+        rs = resnik_model.get_similarities_from_bipartite_graph_node_names(source_node_names = pair[0], 
+                                                                            destination_node_names= pair[1])
         js = dag.get_ancestors_jaccard_from_node_names(
             dag.get_breadth_first_search_from_node_names(
                 src_node_name=dag.get_root_node_names()[0],
