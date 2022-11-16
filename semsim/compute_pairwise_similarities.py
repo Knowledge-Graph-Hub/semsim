@@ -65,12 +65,11 @@ def compute_pairwise_sims(
     try:
 
         print("Computing Resnik...")
-        rs_df = resnik_model. \
-            get_similarities_from_clique_graph_node_prefixes(
-                node_prefixes=prefixes,
-                minimum_similarity=cutoff,
-                return_similarities_dataframe=True,
-            )
+        rs_df = resnik_model.get_similarities_from_clique_graph_node_prefixes(
+            node_prefixes=prefixes,
+            minimum_similarity=cutoff,
+            return_similarities_dataframe=True,
+        )
 
         print("Computing Jaccard...")
         all_jaccard_names = []
@@ -81,12 +80,11 @@ def compute_pairwise_sims(
             else:
                 jaccard_name = f"jaccard_{root_name}"
                 all_jaccard_names.append(jaccard_name)
-            rs_df[jaccard_name] = \
-                dag.get_ancestors_jaccard_from_node_ids(
-                    dag.get_breadth_first_search_from_node_ids(
-                        src_node_id=root,
-                        compute_predecessors=True,
-                    ),
+            rs_df[jaccard_name] = dag.get_ancestors_jaccard_from_node_ids(
+                dag.get_breadth_first_search_from_node_ids(
+                    src_node_id=root,
+                    compute_predecessors=True,
+                ),
                 list(rs_df["source"]),
                 list(rs_df["destination"]),
             )
@@ -97,13 +95,11 @@ def compute_pairwise_sims(
 
         # Remap node IDs to node names
         print("Retrieving node names...")
-        for col in ['source', 'destination']:
+        for col in ["source", "destination"]:
             rs_df[col] = dag.get_node_names_from_node_ids(rs_df[col])
 
         print(f"Writing output to {rs_path}...")
-        rs_df.sort_values(
-            by=["resnik_score"], ascending=False, inplace=True
-        )
+        rs_df.sort_values(by=["resnik_score"], ascending=False, inplace=True)
 
         rs_df.to_csv(rs_path, index=False)
 
@@ -133,9 +129,7 @@ def compute_subset_sims(
     return: dict of tuples, with the IDs of each pair (a tuple) as
     the key and a tuple of (Resnik, Jaccard) as value.
     """
-    print(
-        f"Calculating Resnik and Jaccard scores for {len(nodes)} nodes..."
-    )
+    print(f"Calculating Resnik and Jaccard scores for {len(nodes)} nodes...")
 
     all_sims = {}
     all_pairs = combinations(nodes, 2)
@@ -144,8 +138,15 @@ def compute_subset_sims(
     resnik_model.fit(dag, node_counts=counts)
 
     for pair in all_pairs:
-        rs = resnik_model.get_similarities_from_bipartite_graph_node_names(source_node_names = pair[0], 
-                                                                            destination_node_names= pair[1])
+        rs = resnik_model.get_similarities_from_bipartite_graph_node_names(
+            source_node_names=pair[0], destination_node_names=pair[1]
+        )
+        rs_lst = list(rs[0].flat)
+        if len(rs_lst) == 0:
+            rs_val = 0
+        else:
+            rs_val = rs_lst[0]
+
         js = dag.get_ancestors_jaccard_from_node_names(
             dag.get_breadth_first_search_from_node_names(
                 src_node_name=dag.get_root_node_names()[0],
@@ -154,6 +155,6 @@ def compute_subset_sims(
             [pair[0]],
             [pair[1]],
         )
-        all_sims[pair] = (rs, float(js))
+        all_sims[pair] = (float(rs_val), float(js))
 
     return all_sims
