@@ -1,9 +1,9 @@
 """Compute pairwise similarities."""
 
 import pathlib
+from itertools import combinations
 from typing import Dict
 
-import pandas as pd
 from grape import Graph
 from grape.similarities import DAGResnik
 
@@ -113,3 +113,48 @@ def compute_pairwise_sims(
         success = False
 
     return success
+
+
+def compute_subset_sims(
+    dag: Graph,
+    counts: Dict[str, int],
+    nodes: list,
+) -> dict:
+    """Compute Resnik and Jaccard similarities for a given list of nodes.
+
+    Parameters
+    -------------------
+    dag: Graph
+        The DAG to use to compute the Resnik and Jaccard similarities.
+    counts: Dict[str, int]
+        The counts to use for Resnik similarity.
+    nodes: list
+        Nodes to be will be compared for similarity.
+    return: dict of tuples, with the IDs of each pair (a tuple) as
+    the key and a tuple of (Resnik, Jaccard) as value.
+    """
+    print(
+        f"Calculating Resnik and Jaccard scores for {len(nodes)} nodes..."
+    )
+
+    all_sims = {}
+    all_pairs = combinations(nodes, 2)
+
+    resnik_model = DAGResnik()
+    resnik_model.fit(dag, node_counts=counts)
+
+    print("Computing Resnik...")
+
+    for pair in all_pairs:
+        rs = resnik_model.get_similarity_from_node_name(pair[0], pair[1])
+        js = dag.get_ancestors_jaccard_from_node_names(
+            dag.get_breadth_first_search_from_node_names(
+                src_node_name=dag.get_root_node_names()[0],
+                compute_predecessors=True,
+            ),
+            [pair[0]],
+            [pair[1]],
+        )
+        all_sims[pair] = (rs, float(js))
+
+    return all_sims
