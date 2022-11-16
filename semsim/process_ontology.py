@@ -6,9 +6,9 @@ from typing import Union
 
 import pandas as pd
 
-from .compute_pairwise_similarities import (  # type: ignore # noqa I001
-    compute_pairwise_sims,                    # type: ignore # noqa I001
-    compute_subset_sims                       # type: ignore # noqa I001
+from .compute_pairwise_similarities import (
+    compute_pairwise_sims,
+    compute_subset_sims
 )
 from .extra_prefixes import PREFIXES
 
@@ -24,7 +24,7 @@ def get_similarities(
     nodes: list,
     predicate: str,
     root_node: str,
-    subset: bool
+    subset: bool,
 ) -> Union[bool, dict]:
     """Compute and store similarities to the provided paths.
 
@@ -57,8 +57,10 @@ def get_similarities(
         all_extra_prefixes = PREFIXES
         traversal_prefixes = [f"{prefix}:" for prefix in nodes]
 
-        print("Comparing nodes with these prefixes: "
-              f" {' '.join(focus_prefixes)}")
+        print(
+            "Comparing nodes with these prefixes: "
+            f" {' '.join(focus_prefixes)}"
+        )
 
     onto_graph = (
         onto_graph_class(directed=True)
