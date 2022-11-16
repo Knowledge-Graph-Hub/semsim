@@ -159,30 +159,3 @@ def compute_subset_sims(
         all_sims[pair] = (rs, float(js))
 
     return all_sims
-
-
-def compute_pairwise_ancestors_jaccard(dag: Graph, path: str) -> str:
-    """Compute and store pairwise Ancestors Jaccard of graph.
-
-    Parameters
-    -------------------
-    dag: Graph
-        The DAG to use to compute the Ancestors Jaccard similarity.
-    path: str
-        The path where to store the pairwise similarity.
-    return: str
-        The path where file was written
-    """
-    print("Calculating pairwise Jaccard scores...")
-    pd.DataFrame(
-        dag.get_shared_ancestors_jaccard_adjacency_matrix(
-            dag.get_breadth_first_search_from_node_names(
-                src_node_name=dag.get_root_node_names()[0],
-                compute_predecessors=True,
-            ),
-            verbose=True,
-        ),
-        columns=dag.get_node_names(),
-        index=dag.get_node_names(),
-    ).to_csv(path, index=True, header=True)
-    return path

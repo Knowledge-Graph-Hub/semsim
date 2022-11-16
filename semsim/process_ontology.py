@@ -11,6 +11,7 @@ from .compute_pairwise_similarities import (
     compute_subset_sims
 )
 from .extra_prefixes import PREFIXES
+from .utils import load_local_graph
 
 GRAPE_DATA_MOD = "grape.datasets.kgobo"
 
@@ -25,6 +26,7 @@ def get_similarities(
     predicate: str,
     root_node: str,
     subset: bool,
+    input_file: str = None
 ) -> Union[bool, dict]:
     """Compute and store similarities to the provided paths.
 
@@ -47,7 +49,19 @@ def get_similarities(
     """
     success = True
 
-    onto_graph_class = import_grape_class(ontology)
+    if not input_file:
+        onto_graph_class = import_grape_class(ontology)
+        onto_graph = (
+            onto_graph_class(directed=True)
+            .remove_disconnected_nodes()
+            .to_transposed()
+        )
+    else:
+        onto_graph = (
+            load_local_graph(ontology, input_file)
+            .remove_disconnected_nodes()
+            .to_transposed()
+        )
 
     if not subset:
         focus_prefixes = [prefix for prefix in nodes]
