@@ -4,7 +4,6 @@ import pathlib
 from itertools import combinations
 from typing import Dict
 
-import pandas as pd
 from grape import Graph
 from grape.similarities import DAGResnik
 

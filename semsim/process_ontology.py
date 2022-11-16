@@ -6,10 +6,7 @@ from typing import Union
 
 import pandas as pd
 
-from .compute_pairwise_similarities import (
-    compute_pairwise_sims,
-    compute_subset_sims
-)
+from .compute_pairwise_similarities import compute_pairwise_sims, compute_subset_sims # NOQA
 from .extra_prefixes import PREFIXES
 from .utils import load_local_graph
 
