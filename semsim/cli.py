@@ -156,6 +156,7 @@ def somesim(
         output_dir=None,
         nodes=participants,
         predicate=predicate,
+        root_node="",
         subset=True,
     )
 
